@@ -18,10 +18,7 @@
             <column name="initials" type="VARCHAR(200)">
                 <constraints nullable="false"/>
             </column>
-            <column name="birth_date" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="tabel_number" type="INTEGER">
+            <column name="time_sheet" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
         </createTable>
