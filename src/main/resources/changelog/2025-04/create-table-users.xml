@@ -19,7 +19,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="time_sheet" type="INTEGER">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
     </changeSet>
