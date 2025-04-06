@@ -1,7 +1,7 @@
-package mapper;
+package com.time.managment.repository.mapper;
 
-import dto.PresenceDTO;
-import entity.Presence;
+import com.time.managment.dto.PresenceDTO;
+import com.time.managment.entity.Presence;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

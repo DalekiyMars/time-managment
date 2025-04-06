@@ -4,7 +4,6 @@ import com.time.managment.CommonTestStarter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import service.UserService;
 
 import java.util.NoSuchElementException;
 

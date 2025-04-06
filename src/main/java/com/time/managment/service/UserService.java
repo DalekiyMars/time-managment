@@ -1,14 +1,14 @@
-package service;
+package com.time.managment.service;
 
-import constants.Constants;
-import dto.UserDTO;
-import entity.User;
-import exceptions.SomethingWentWrong;
+import com.time.managment.dto.UserDTO;
+import com.time.managment.entity.User;
+import com.time.managment.constants.Constants;
+import com.time.managment.exceptions.SomethingWentWrong;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mapper.UserMapper;
+import com.time.managment.repository.mapper.UserMapper;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
+import com.time.managment.repository.UserRepository;
 
 import java.util.NoSuchElementException;
 

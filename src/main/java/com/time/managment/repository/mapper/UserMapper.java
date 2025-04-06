@@ -1,7 +1,7 @@
-package mapper;
+package com.time.managment.repository.mapper;
 
-import dto.UserDTO;
-import entity.User;
+import com.time.managment.dto.UserDTO;
+import com.time.managment.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

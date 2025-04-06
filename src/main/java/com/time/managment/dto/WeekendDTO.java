@@ -1,4 +1,4 @@
-package dto;
+package com.time.managment.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

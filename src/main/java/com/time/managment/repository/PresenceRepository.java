@@ -1,6 +1,6 @@
-package repository;
+package com.time.managment.repository;
 
-import entity.Presence;
+import com.time.managment.entity.Presence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

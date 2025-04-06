@@ -1,4 +1,4 @@
-package entity;
+package com.time.managment.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

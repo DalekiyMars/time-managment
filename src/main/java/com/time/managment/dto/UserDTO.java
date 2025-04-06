@@ -1,4 +1,4 @@
-package dto;
+package com.time.managment.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class DepartmentDTO {
-    private UserDTO user;
-    private Integer department;
+public class UserDTO {
+    private String username;
+    private Integer timeSheet;
 }
