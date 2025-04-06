@@ -22,4 +22,9 @@ public class UserController {
     public UserDTO getUser(@PathVariable("id") Integer id){
         return userService.getUser(id);
     }
+
+    @PostMapping("/update/{timesheet}")
+    public UserDTO updateExistedUser(@PathVariable("timesheet") Integer timesheet, @RequestBody @Valid User user){
+        return userService.updateUser(timesheet, user);
+    }
 }
