@@ -34,9 +34,13 @@ public class UserService {
             throw new SomethingWentWrong(e.getMessage());
         }
     }
-
-    public UserDTO updateUser(User user, Integer timeSheet){
-        user.setTimeSheet(timeSheet);
-        return userMapper.toUserDto(userRepository.save(user));
+    public UserDTO updateUser(Integer targetTimeSheet, User updatedUser) {
+        if (!userRepository.existsByTimeSheet(targetTimeSheet)){
+            throw new NoSuchElementException(
+                    "User not found with timeSheet: " + targetTimeSheet
+            );
+        }
+        updatedUser.setTimeSheet(targetTimeSheet);
+        return saveUser(updatedUser);
     }
 }
