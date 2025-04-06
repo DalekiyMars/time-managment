@@ -6,7 +6,7 @@ import com.time.managment.constants.Constants;
 import com.time.managment.exceptions.SomethingWentWrong;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.time.managment.repository.mapper.UserMapper;
+import com.time.managment.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import com.time.managment.repository.UserRepository;
 

@@ -1,7 +1,9 @@
 package com.time.managment.dto;
 
 import com.time.managment.constants.ExceptionCodes;
+import lombok.Getter;
 
+@Getter
 public class ErrorResponse {
     private final String errorCode;
     private final String error;

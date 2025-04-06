@@ -1,4 +1,4 @@
-package com.time.managment.repository.mapper;
+package com.time.managment.mapper;
 
 import com.time.managment.dto.UserDTO;
 import com.time.managment.entity.User;
