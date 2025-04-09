@@ -20,6 +20,7 @@ public class ExceptionHandleController {
 
         return ResponseEntity.badRequest().body(errors);
     }
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<?> handleValidationErrors(NoSuchElementException ex) {
         ErrorResponse response = new ErrorResponse(ExceptionCodes.HANDLE_EXCEPTION, ex.getMessage());
