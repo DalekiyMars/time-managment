@@ -8,6 +8,6 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface DepartmentMapper {
-    @Mapping(source = "userId", target = "user") // Указываем связь между userId и user
+    @Mapping(source = "userTimeSheet", target = "user") // Указываем связь между userId и user
     DepartmentDTO toDepartmentDTO(Department department);
 }

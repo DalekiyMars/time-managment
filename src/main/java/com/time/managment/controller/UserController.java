@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable("id") Integer id){
-        return userService.getUser(id);
+        return userService.getUserDTO(id);
     }
 
     @PostMapping("/update/{timesheet}")

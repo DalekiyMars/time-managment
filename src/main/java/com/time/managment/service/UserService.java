@@ -1,14 +1,15 @@
 package com.time.managment.service;
 
+import com.time.managment.constants.Constants;
 import com.time.managment.dto.UserDTO;
 import com.time.managment.entity.User;
-import com.time.managment.constants.Constants;
 import com.time.managment.exceptions.SomethingWentWrong;
+import com.time.managment.mapper.UserMapper;
+import com.time.managment.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.time.managment.mapper.UserMapper;
 import org.springframework.stereotype.Service;
-import com.time.managment.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -19,28 +20,31 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserDTO getUser(Integer userId){
+    public User getUser(Integer timeSheet) {
         return userRepository
-                .findById(userId)
-                .map(userMapper::toUserDto)
+                .findByTimeSheet(timeSheet)
                 .orElseThrow(() -> new NoSuchElementException(Constants.ExceptionDescriptions.NO_SUCH_ELEMENT));
     }
 
-    public UserDTO saveUser(User user){
-        try {
+    public UserDTO getUserDTO(Integer timeSheet) {
+        return userMapper.toUserDto(getUser(timeSheet));
+    }
+
+    public UserDTO saveUser(User user) {
+        if (!userRepository.existsByTimeSheet(user.getTimeSheet())) {
             return userMapper.toUserDto(userRepository.save(user));
-        } catch (Exception e){
+        } else {
             log.error("Error saving user " + user);
-            throw new SomethingWentWrong(e.getMessage());
+            throw new SomethingWentWrong("User with this timesheet already exists");
         }
     }
-    public UserDTO updateUser(Integer targetTimeSheet, User updatedUser) {
-        if (!userRepository.existsByTimeSheet(targetTimeSheet)){
-            throw new NoSuchElementException(
-                    "User not found with timeSheet: " + targetTimeSheet
-            );
-        }
-        updatedUser.setTimeSheet(targetTimeSheet);
-        return saveUser(updatedUser);
+
+    @Transactional
+    public UserDTO updateUser(Integer timeSheet, User updatedUser) {
+        User existingUser = userRepository.findByTimeSheet(timeSheet)
+                .orElseThrow(() -> new NoSuchElementException("User not found with timesheet: " + updatedUser.getTimeSheet()));
+
+        existingUser.setUsername(updatedUser.getUsername());
+        return userMapper.toUserDto(userRepository.save(existingUser));
     }
 }

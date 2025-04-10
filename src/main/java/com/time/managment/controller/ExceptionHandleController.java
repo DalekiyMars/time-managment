@@ -2,6 +2,8 @@ package com.time.managment.controller;
 
 import com.time.managment.constants.ExceptionCodes;
 import com.time.managment.dto.ErrorResponse;
+import com.time.managment.exceptions.SomethingWentWrong;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +26,18 @@ public class ExceptionHandleController {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<?> handleValidationErrors(NoSuchElementException ex) {
         ErrorResponse response = new ErrorResponse(ExceptionCodes.HANDLE_EXCEPTION, ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(SomethingWentWrong.class)
+    public ResponseEntity<?> handleValidationErrors(SomethingWentWrong ex) {
+        ErrorResponse response = new ErrorResponse(ExceptionCodes.HANDLE_SOMETHING_WRONG, ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleValidationErrors(ConstraintViolationException ex) {
+        ErrorResponse response = new ErrorResponse(ExceptionCodes.HANDLE_SOMETHING_WRONG, ex.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
 }

@@ -9,5 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-     boolean existsByTimeSheet(@NotNull Integer timeSheet);
+    Optional<User> findByTimeSheet(@NotNull Integer timeSheet);
+
+    boolean existsByTimeSheet(@NotNull Integer timeSheet);
 }

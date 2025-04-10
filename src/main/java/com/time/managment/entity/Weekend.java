@@ -16,8 +16,8 @@ public class Weekend {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User userId;
+    @JoinColumn(name = "user_timesheet")
+    private User userTimeSheet;
 
     @NotBlank
     @Column(name = "reason")

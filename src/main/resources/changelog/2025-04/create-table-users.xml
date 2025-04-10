@@ -18,7 +18,7 @@
             <column name="initials" type="VARCHAR(200)">
                 <constraints nullable="false"/>
             </column>
-            <column name="time_sheet" type="INTEGER">
+            <column name="timesheet" type="INTEGER">
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>

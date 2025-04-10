@@ -8,6 +8,6 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = UserMapper.class)
 public interface PresenceMapper {
-    @Mapping(source = "userId", target = "user") // Указываем связь между userId и user
+    @Mapping(source = "userTimeSheet", target = "user") // Указываем связь между userId и user
     PresenceDTO toPresenceDTO(Presence presence);
 }
