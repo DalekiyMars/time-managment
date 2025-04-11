@@ -2,12 +2,15 @@ package com.time.managment.service;
 
 import com.time.managment.dto.PresenceDTO;
 import com.time.managment.entity.Presence;
+import com.time.managment.entity.User;
 import com.time.managment.mapper.PresenceMapper;
 import com.time.managment.repository.PresenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,5 +28,49 @@ public class PresenceService {
 
     public PresenceDTO savePresence(Presence presence) {
         return mapper.toPresenceDTO(repository.save(presence));
+    }
+    public List<Presence> getAllPresence() {
+        return repository.findAll();
+    }
+
+    // Обработка строки от СКУД и создание записи о присутствии
+    public PresenceDTO processPresenceString(String scudData) {
+        // Разбираем строку, делим по разделителю ";"
+        String[] data = scudData.split(";");
+
+        if (data.length != 5) {
+            throw new IllegalArgumentException("Неверный формат строки от СКУД");
+        }
+
+        // Извлекаем данные
+        //String fullName = data[0];        // ФамилияИмяОтчество
+        String timeSheet = data[1];       // Табельный номер
+        //String department = data[2];      // Отдел (не используется для поиска, но может быть полезно)
+        String date = data[3];            // Дата (например, "2025-04-11")
+        String timeMark = data[4];        // Временная метка (например, "08:00:00")
+
+        // Убираем лишние символы (например, кавычки)
+        timeMark = timeMark.replace("\"", "").trim();
+
+        // Преобразуем строку даты и времени
+        String dateTimeString = date + "T" + timeMark;
+        LocalDateTime time = LocalDateTime.parse(dateTimeString);
+
+        // Ищем пользователя по табельному номеру
+        User user = userService.getUser(Integer.valueOf(timeSheet));
+        if (user == null) {
+            throw new NoSuchElementException("Пользователь с табельным номером " + timeSheet + " не найден.");
+        }
+
+        // Создаём новую запись Presence
+        Presence presence = new Presence();
+        presence.setUserTimeSheet(user);
+        presence.setTimeMark(time);
+
+        // Сохраняем в базе данных
+        Presence savedPresence = repository.save(presence);
+
+        // Возвращаем DTO для ответа
+        return mapper.toPresenceDTO(savedPresence);
     }
 }

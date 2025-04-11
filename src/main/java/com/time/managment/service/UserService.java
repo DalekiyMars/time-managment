@@ -30,12 +30,13 @@ public class UserService {
         return userMapper.toUserDto(getUser(timeSheet));
     }
 
+    @Transactional
     public UserDTO saveUser(User user) {
         if (!userRepository.existsByTimeSheet(user.getTimeSheet())) {
             return userMapper.toUserDto(userRepository.save(user));
         } else {
             log.error("Error saving user " + user);
-            throw new SomethingWentWrong("User with this timesheet already exists");
+            throw new SomethingWentWrong(Constants.ExceptionDescriptions.NO_SUCH_ELEMENT);
         }
     }
 
@@ -46,5 +47,14 @@ public class UserService {
 
         existingUser.setUsername(updatedUser.getUsername());
         return userMapper.toUserDto(userRepository.save(existingUser));
+    }
+
+    @Transactional
+    public void deleteUser(Integer timeSheet) {
+        try {
+            userRepository.deleteByTimeSheet(timeSheet);
+        } catch (Exception ex){
+            throw new NoSuchElementException(Constants.ExceptionDescriptions.NO_SUCH_ELEMENT);
+        }
     }
 }

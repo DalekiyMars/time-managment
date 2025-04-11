@@ -17,7 +17,7 @@ public class Presence {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_timesheet")
+    @JoinColumn(name = "user_timesheet", referencedColumnName = "timesheet")
     private User userTimeSheet;
 
     @Column(name = "time_mark")

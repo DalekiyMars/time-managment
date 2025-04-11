@@ -32,6 +32,4 @@ public class DepartmentService {
 
         return repository.save(department);
     }
-
-
 }
