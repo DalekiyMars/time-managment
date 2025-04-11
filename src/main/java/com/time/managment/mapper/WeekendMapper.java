@@ -1,7 +1,6 @@
 package com.time.managment.mapper;
 
 import com.time.managment.dto.WeekendDTO;
-import com.time.managment.entity.User;
 import com.time.managment.entity.Weekend;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

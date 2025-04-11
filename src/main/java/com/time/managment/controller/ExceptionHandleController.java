@@ -1,6 +1,5 @@
 package com.time.managment.controller;
 
-import com.time.managment.constants.Constants;
 import com.time.managment.constants.ExceptionCodes;
 import com.time.managment.dto.ErrorResponse;
 import com.time.managment.exceptions.SomethingWentWrong;

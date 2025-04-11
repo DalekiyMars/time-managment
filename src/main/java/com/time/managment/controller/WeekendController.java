@@ -2,7 +2,6 @@ package com.time.managment.controller;
 
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
-import com.time.managment.entity.Weekend;
 import com.time.managment.service.WeekendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
