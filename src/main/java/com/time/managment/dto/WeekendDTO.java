@@ -21,9 +21,7 @@ public class WeekendDTO {
     private String reason;
     @NotNull
     private LocalDate weekendDate;
-    @NotNull
     private LocalTime startTime;
-    @NotNull
     private LocalTime endTime;
 
 

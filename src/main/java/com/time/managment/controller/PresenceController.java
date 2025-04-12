@@ -48,4 +48,5 @@ public class PresenceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Constants.ExceptionMessages.SOMETHING_WENT_WRONG);
         }
     }
+
 }

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск записей</title>
+    <style>
+        body {
+            background-color: #89CFF0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #333;
+        }
+
+        .form-inline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        select, input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .results {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .record-box {
+            background-color: #e6f0ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Добавление стилей для типов */
+        .record-type-presence {
+            color: green;
+        }
+
+        .record-type-weekend {
+            color: red;
+        }
+    </style>
+
+</head>
+<body>
+<form method="get" action="/records">
+    <div class="header">
+        <h1>Поиск записей</h1>
+        <div class="form-inline">
+            <label for="period">Период:</label>
+            <select id="period" name="period">
+                <option value="week" th:selected="${periodDisplay == 'Last Week'}">Последняя неделя</option>
+                <option value="month" th:selected="${periodDisplay == 'Last Month'}">Последний месяц</option>
+                <option value="year" th:selected="${periodDisplay == 'Last Year'}">Последний год</option>
+            </select>
+
+            <label for="userId">ID пользователя:</label>
+            <input type="number" id="userId" name="userId" placeholder="Введите ID пользователя" th:value="${userId}">
+
+            <button type="submit">Поиск</button>
+        </div>
+    </div>
+</form>
+
+<div class="results">
+    <div th:if="${errorMessage != null}" style="color: red; font-weight: bold;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <div class="record-box" th:if="${#lists.isEmpty(records)}">
+        <p>Записи не найдены.</p>
+        <p>ID пользователя: <span th:text="${userId}">N/A</span></p>
+    </div>
+
+    <div class="record-box" th:each="record : ${records}">
+        <p>ID пользователя: <span th:text="${record.userId}"></span></p>
+        <p>Дата: <span th:text="${#temporals.format(record.date, 'dd.MM.yyyy')}"></span></p>
+        <p>
+            Тип:
+            <span th:classappend="${record.type == 'presence'} ? 'record-type-presence' : 'record-type-weekend'"
+                  th:text="${record.readableType}"></span>
+        </p>
+
+        <!-- Проверка на null для startTime и endTime -->
+        <p>Начало: <span th:text="${record.startTime != null ? #temporals.format(record.startTime, 'HH:mm') : 'Весь день'}"></span></p>
+
+        <!-- Если тип 'presence', скрываем поле 'Конец' -->
+        <div th:if="${record.type != 'presence'}">
+            <p>Окончание: <span th:text="${record.endTime != null ? #temporals.format(record.endTime, 'HH:mm') : 'Весь день'}"></span></p>
+        </div>
+
+        <p th:if="${record.type == 'weekend'}">Причина: <span th:text="${record.reason}"></span></p>
+    </div>
+</div>
+</body>
+</html>
