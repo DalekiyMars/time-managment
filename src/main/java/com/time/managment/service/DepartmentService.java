@@ -28,7 +28,7 @@ public class DepartmentService {
                 .collect(Collectors.toList());
     }
 
-    public Department saveDepartment(Integer timeSheet, Integer departmentNumber) {
+    public DepartmentDTO saveDepartment(Integer timeSheet, Integer departmentNumber) {
         User user = userService.getUser(timeSheet);
         Optional<Department> existing = repository.findByUserTimeSheetAndDepartment(user, departmentNumber);
         if (existing.isPresent()) {
@@ -38,6 +38,13 @@ public class DepartmentService {
         Department department = new Department(departmentNumber);
         department.setUserTimeSheet(user);
 
-        return repository.save(department);
+        return mapper.toDepartmentDTO(repository.save(department));
+    }
+
+    public void deleteByTimesheetAndDepartment(Integer timesheet, Integer departmentNumber) {
+        var usr = userService.getUser(timesheet);
+        Department department = repository.findByUserTimeSheetAndDepartment(usr, departmentNumber)
+                .orElseThrow(() -> new RuntimeException("Department not found with timesheet: " + timesheet + " and department: " + departmentNumber));
+        repository.delete(department);
     }
 }

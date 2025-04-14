@@ -2,7 +2,6 @@ package com.time.managment.restController;
 
 import com.time.managment.dto.DepartmentCreateRequest;
 import com.time.managment.dto.DepartmentDTO;
-import com.time.managment.entity.Department;
 import com.time.managment.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,8 +22,17 @@ public class DepartmentRestController {
     }
 
     @PostMapping("/save-to/")
-    public ResponseEntity<Department> saveDepartment(@RequestBody DepartmentCreateRequest request) {
-        Department created = departmentService.saveDepartment(request.getTimeSheet(), request.getDepartmentNumber());
+    public ResponseEntity<DepartmentDTO> saveDepartment(@RequestBody DepartmentCreateRequest request) {
+        DepartmentDTO created = departmentService.saveDepartment(request.getTimeSheet(), request.getDepartmentNumber());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @DeleteMapping("/by-timesheet-and-department")
+    public ResponseEntity<Void> deleteDepartment(
+            @RequestParam Integer timesheet,
+            @RequestParam Integer departmentNumber
+    ) {
+        departmentService.deleteByTimesheetAndDepartment(timesheet, departmentNumber);
+        return ResponseEntity.ok().build();
     }
 }

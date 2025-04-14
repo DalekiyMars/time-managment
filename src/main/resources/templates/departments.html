@@ -1,65 +1,106 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Поиск по табельному</title>
+    <title>Departments</title>
     <style>
         body {
-            background-color: #f0f8ff;
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f6ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
 
-        .form-inline {
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 50, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1d4ed8;
+            margin-bottom: 20px;
+        }
+
+        form {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        input[type="number"], button {
+        label {
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        input[type="number"] {
             padding: 10px;
-            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1e40af;
         }
 
         .results {
-            display: grid;
-            gap: 20px;
+            margin-top: 30px;
         }
 
-        .record-box {
-            background-color: #e0f0ff;
-            padding: 15px;
+        .results h2 {
+            color: #1d4ed8;
+            border-bottom: 2px solid #93c5fd;
+            padding-bottom: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #e0f2fe;
+            margin-bottom: 10px;
+            padding: 12px;
             border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
 <body>
+<div class="container">
+    <h1>Поиск отделений</h1>
 
-<h1>Поиск отделов по табельному номеру</h1>
+    <form th:action="@{/departments/get}" method="get">
+        <label for="timesheet">Введите табельный номер:</label>
+        <input type="number" id="timesheet" name="timesheet" required>
+        <button type="submit">Найти</button>
+    </form>
 
-<form method="get" action="/departments" class="form-inline">
-    <label for="timesheet">Табельный номер:</label>
-    <input type="number" id="timesheet" name="timesheet" th:value="${timesheet}" required>
-    <button type="submit">Поиск</button>
-</form>
-
-<div class="results">
-    <div th:if="${errorMessage != null}" style="color: red;">
-        <p th:text="${errorMessage}"></p>
-    </div>
-
-    <div class="record-box" th:if="${#lists.isEmpty(departments)} and timesheet != null">
-        <p>Ничего не найдено по табельному номеру <strong th:text="${timesheet}"></strong>.</p>
-    </div>
-
-    <div class="record-box" th:each="dept : ${departments}">
-        <p><strong>Имя:</strong> <span th:text="${dept.user.username}"></span></p>
-        <p><strong>Табельный номер:</strong> <span th:text="${dept.user.timeSheet}"></span></p>
-        <p><strong>Отдел:</strong> <span th:text="${dept.department}"></span></p>
+    <div class="results" th:if="${departments != null}">
+        <h2>Результаты:</h2>
+        <ul>
+            <li th:each="dept : ${departments}">
+                <span th:text="'Отделение: ' + ${dept.department} + ', Пользователь: ' + ${dept.user.username} + '-' + ${dept.user.timeSheet}"></span>
+            </li>
+        </ul>
     </div>
 </div>
-
 </body>
 </html>
