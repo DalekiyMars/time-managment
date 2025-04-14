@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск по табельному</title>
+    <style>
+        body {
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .form-inline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        input[type="number"], button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .results {
+            display: grid;
+            gap: 20px;
+        }
+
+        .record-box {
+            background-color: #e0f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<h1>Поиск отделов по табельному номеру</h1>
+
+<form method="get" action="/departments" class="form-inline">
+    <label for="timesheet">Табельный номер:</label>
+    <input type="number" id="timesheet" name="timesheet" th:value="${timesheet}" required>
+    <button type="submit">Поиск</button>
+</form>
+
+<div class="results">
+    <div th:if="${errorMessage != null}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div class="record-box" th:if="${#lists.isEmpty(departments)} and timesheet != null">
+        <p>Ничего не найдено по табельному номеру <strong th:text="${timesheet}"></strong>.</p>
+    </div>
+
+    <div class="record-box" th:each="dept : ${departments}">
+        <p><strong>Имя:</strong> <span th:text="${dept.user.username}"></span></p>
+        <p><strong>Табельный номер:</strong> <span th:text="${dept.user.timeSheet}"></span></p>
+        <p><strong>Отдел:</strong> <span th:text="${dept.department}"></span></p>
+    </div>
+</div>
+
+</body>
+</html>

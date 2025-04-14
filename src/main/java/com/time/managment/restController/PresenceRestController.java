@@ -1,4 +1,4 @@
-package com.time.managment.controller;
+package com.time.managment.restController;
 
 import com.time.managment.constants.Constants;
 import com.time.managment.dto.PresenceDTO;
@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/presences")
 @RequiredArgsConstructor
-public class PresenceController {
+public class PresenceRestController {
     private final PresenceService presenceService;
 
     // Получить все присутствия для конкретного timesheet

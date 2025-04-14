@@ -2,6 +2,7 @@ package com.time.managment.service;
 
 import com.time.managment.dto.DepartmentDTO;
 import com.time.managment.entity.Department;
+import com.time.managment.entity.User;
 import com.time.managment.mapper.DepartmentMapper;
 import com.time.managment.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,8 +29,14 @@ public class DepartmentService {
     }
 
     public Department saveDepartment(Integer timeSheet, Integer departmentNumber) {
+        User user = userService.getUser(timeSheet);
+        Optional<Department> existing = repository.findByUserTimeSheetAndDepartment(user, departmentNumber);
+        if (existing.isPresent()) {
+            throw new IllegalArgumentException("Такой отдел уже существует для указанного табельного номера.");
+        }
+
         Department department = new Department(departmentNumber);
-        department.setUserTimeSheet(userService.getUser(timeSheet));
+        department.setUserTimeSheet(user);
 
         return repository.save(department);
     }

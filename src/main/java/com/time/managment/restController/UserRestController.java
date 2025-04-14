@@ -1,4 +1,4 @@
-package com.time.managment.controller;
+package com.time.managment.restController;
 
 import com.time.managment.entity.User;
 import com.time.managment.dto.UserDTO;
@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class UserController {
+public class UserRestController {
     private final UserService userService;
 
     @PostMapping("/add-new")

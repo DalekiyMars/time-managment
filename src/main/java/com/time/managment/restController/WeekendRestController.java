@@ -1,4 +1,4 @@
-package com.time.managment.controller;
+package com.time.managment.restController;
 
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/weekends")
 @RequiredArgsConstructor
-public class WeekendController {
+public class WeekendRestController {
     private final WeekendService weekendService;
 
     // Получить список выходных по timesheet

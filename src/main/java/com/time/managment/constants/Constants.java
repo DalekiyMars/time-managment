@@ -12,4 +12,7 @@ public class Constants {
         public static final String  FIELD_EXCEPTION= "Entity loss necessary field/s";
         public static final String SAVING_EXCEPTION = "Saving exception";
     }
+    public static class Urls{
+        public static final String DEPARTMENTS_FORM_URL = "http://localhost:8080/api/departments";
+    }
 }
