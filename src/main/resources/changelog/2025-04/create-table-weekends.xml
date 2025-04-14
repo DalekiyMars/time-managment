@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
-    <changeSet id="v0-0-0-1" author="Eugene">
+    <changeSet id="v0-0-0-4" author="Eugene">
         <preConditions onFail="CONTINUE">
             <not>
                 <tableExists tableName="weekends"/>
@@ -15,7 +15,7 @@
             <column name="id" type="BIGSERIAL" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user_id" type="INTEGER">
+            <column name="user_timesheet" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="weekend_date" type="DATE">
@@ -27,5 +27,11 @@
             <column name="start_time" type="TIME"/>
             <column name="end_time" type="TIME"/>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="user_timesheet"
+                                 baseTableName="weekends"
+                                 constraintName="fk_weekend_user_timesheet"
+                                 referencedColumnNames="timesheet"
+                                 referencedTableName="users"/>
+
     </changeSet>
 </databaseChangeLog>

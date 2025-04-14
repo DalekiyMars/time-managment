@@ -23,6 +23,6 @@ public class User {
     private String username;
 
     @NotNull
-    @Column(name = "time_sheet")
+    @Column(name = "timesheet")
     private Integer timeSheet;
 }
