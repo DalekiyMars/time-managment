@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить присутствие</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #fefce8; padding: 0; margin: 0; }
+        .container { max-width: 600px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: #ca8a04; }
+        label { font-weight: bold; }
+        input[type="number"], input[type="datetime-local"] {
+            padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;
+        }
+        button { padding: 10px; background: #ca8a04; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .message { margin-top: 20px; padding: 12px; border-radius: 8px; font-weight: bold; }
+        .success { background-color: #dcfce7; color: #166534; }
+        .error { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Добавить присутствие</h1>
+    <form th:action="@{/presence/add-form}" method="post">
+        <label for="timeSheet">Табельный номер:</label>
+        <input type="number" name="timeSheet" id="timeSheet" required>
+
+        <label for="timeMark">Дата и время:</label>
+        <input type="datetime-local" name="timeMark" id="timeMark" required>
+
+        <button type="submit">Сохранить</button>
+    </form>
+
+    <div th:if="${message}" th:text="${message}" th:classappend="${success} ? 'message success' : 'message error'"></div>
+</div>
+</body>
+</html>

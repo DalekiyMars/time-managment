@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class PresenceService {
     public List<PresenceDTO> getPresences(Integer timeSheet) {
         return repository.getPresencesByUserTimeSheet(userService.getUser(timeSheet)).stream()
                 .map(mapper::toPresenceDTO)
+                .sorted(Comparator.comparing(PresenceDTO::getTimeMark).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -30,7 +32,9 @@ public class PresenceService {
         return mapper.toPresenceDTO(repository.save(presence));
     }
     public List<Presence> getAllPresence() {
-        return repository.findAll();
+        return repository.findAll().stream()
+                .sorted(Comparator.comparing(Presence::getTimeMark, Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
     }
 
     // Обработка строки от СКУД и создание записи о присутствии

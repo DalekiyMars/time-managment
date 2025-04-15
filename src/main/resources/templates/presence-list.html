@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Все присутствия</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #eff6ff;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Все присутствия</h1>
+
+    <div th:if="${#lists.isEmpty(presences)}">
+        <p>Присутствия не найдены.</p>
+    </div>
+
+    <ul th:if="${!#lists.isEmpty(presences)}">
+        <li th:each="presence : ${presences}">
+            <span th:text="${presence.userTimeSheet.username} + ' — ' + ${#temporals.format(presence.timeMark, 'dd.MM.yyyy HH:mm')}"></span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

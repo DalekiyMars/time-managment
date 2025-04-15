@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/presences")
+@RequestMapping("/api/presences")
 @RequiredArgsConstructor
 public class PresenceRestController {
     private final PresenceService presenceService;

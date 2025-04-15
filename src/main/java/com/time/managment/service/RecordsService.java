@@ -39,8 +39,10 @@ public class RecordsService {
             combined.add(dto);
         }
 
-        combined.sort(Comparator.comparing(CombinedRecordDTO::getDate, Comparator.nullsFirst(Comparator.naturalOrder())));
-
+        combined.sort(Comparator.comparing(
+                CombinedRecordDTO::getDate,
+                Comparator.nullsLast(Comparator.reverseOrder())
+        ));
         return combined;
     }
 
