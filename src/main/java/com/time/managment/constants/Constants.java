@@ -15,4 +15,7 @@ public class Constants {
     public static class Urls{
         public static final String DEPARTMENTS_FORM_URL = "http://localhost:8080/api/departments";
     }
+    public static class ClassicMessages{
+        public static final String INFO_DELETED_SUCCESSFULLY = "Информация о выходном удалена.";
+    }
 }

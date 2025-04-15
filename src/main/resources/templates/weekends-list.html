@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Поиск выходных</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        button {
+            margin-top: 10px;
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #eff6ff;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Поиск выходных</h1>
+
+    <form method="get" th:action="@{/weekends/search}">
+        <label for="timeSheet">Введите табельный номер:</label>
+        <input type="text" id="timeSheet" name="timeSheet" th:value="${param.timeSheet}" />
+        <button type="submit">Поиск</button>
+    </form>
+
+    <div th:if="${errorMessage != null}" class="error" th:text="${errorMessage}"></div>
+
+    <ul th:if="${weekends != null}">
+        <li th:each="weekend : ${weekends}">
+            <span th:text="${#temporals.format(weekend.weekendDate, 'dd.MM.yyyy')} + ' — ' + ${weekend.reasonDisplay}"></span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

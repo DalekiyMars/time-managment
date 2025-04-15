@@ -24,7 +24,7 @@ public class DepartmentController {
             List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
             model.addAttribute("departments", departments);
         }
-        return "departments";
+        return "departments-search";
     }
 
     @GetMapping("/add")

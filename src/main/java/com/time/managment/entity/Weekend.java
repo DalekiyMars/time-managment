@@ -4,6 +4,7 @@ import com.time.managment.constants.AbsenceReason;
 import com.time.managment.validator.ValidAbsenceReason;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.time.LocalTime;
 @Setter
 @Entity
 @Table(name = "weekends")
+@NoArgsConstructor
 public class Weekend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +33,14 @@ public class Weekend {
     private LocalTime startTime;
     @Column(name = "end_time")
     private LocalTime endTime;
+
+    public Weekend(Integer userTimeSheet, AbsenceReason reason, LocalDate weekendDate, LocalTime startTime, LocalTime endTime) {
+        this.userTimeSheet = userTimeSheet;
+        this.reason = reason;
+        this.weekendDate = weekendDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     public void setReason(String reason) {
         this.reason = AbsenceReason.fromString(reason);

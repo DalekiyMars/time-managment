@@ -1,7 +1,9 @@
 package com.time.managment.restController;
 
+import com.time.managment.constants.Constants;
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
+import com.time.managment.entity.Weekend;
 import com.time.managment.service.WeekendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/weekends")
+@RequestMapping("/api/weekends")
 @RequiredArgsConstructor
 public class WeekendRestController {
     private final WeekendService weekendService;
@@ -24,8 +26,8 @@ public class WeekendRestController {
 
     // Сохранить выходной день
     @PostMapping("/add")
-    public ResponseEntity<WeekendDTO> addWeekend(@RequestBody WeekendDTO weekendDTO) {
-        WeekendDTO savedWeekend = weekendService.saveWeekend(weekendDTO);
+    public ResponseEntity<WeekendDTO> addWeekend(@RequestBody Weekend weekend) {
+        WeekendDTO savedWeekend = weekendService.saveWeekend(weekend);
         return ResponseEntity.ok(savedWeekend);
     }
 
@@ -33,6 +35,6 @@ public class WeekendRestController {
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteWeekend(@RequestBody WeekendToDelete weekend) {
         weekendService.deleteWeekend(weekend);
-        return ResponseEntity.ok("Weekend deleted successfully");
+        return ResponseEntity.ok(Constants.ClassicMessages.INFO_DELETED_SUCCESSFULLY);
     }
 }

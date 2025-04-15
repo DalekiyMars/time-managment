@@ -27,14 +27,14 @@ public class PresenceController {
     @GetMapping("/search")
     public String searchPresence(@RequestParam(value = "timeSheet",required = false) Integer timeSheet, Model model) {
         if (timeSheet == null)
-            return "presence-search";
+            return "presences-search";
         try {
             List<PresenceDTO> presences = presenceService.getPresences(timeSheet);
             model.addAttribute("presences", presences);
         } catch (NoSuchElementException e) {
             model.addAttribute("errorMessage", "Сотрудник с таким табельным номером не найден.");
         }
-        return "presence-search";
+        return "presences-search";
     }
 
     @GetMapping("/add-form")
@@ -64,6 +64,6 @@ public class PresenceController {
     public String getAllPresences(Model model) {
         List<Presence> presences = presenceService.getAllPresence();
         model.addAttribute("presences", presences);
-        return "presence-list"; // имя шаблона
+        return "presences-list";
     }
 }
