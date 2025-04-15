@@ -1,6 +1,5 @@
 package com.time.managment.restController;
 
-import com.time.managment.dto.DepartmentCreateRequest;
 import com.time.managment.dto.DepartmentDTO;
 import com.time.managment.service.DepartmentService;
 import lombok.RequiredArgsConstructor;

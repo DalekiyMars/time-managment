@@ -29,7 +29,7 @@ public class DepartmentController {
 
     @GetMapping("/add")
     public String showForm() {
-        return "departments-add";
+        return "department-add";
     }
 
     @PostMapping("/save-to/")
@@ -45,6 +45,26 @@ public class DepartmentController {
             model.addAttribute("message", "Ошибка: " + ex.getMessage());
             model.addAttribute("success", false);
         }
-        return "departments-add";
+        return "department-add";
+    }
+
+    @GetMapping("/delete-form")
+    public String showDeleteForm() {
+        return "department-delete";
+    }
+
+    @PostMapping("/delete-form")
+    public String deleteDepartment(@RequestParam Integer timeSheet,
+                                   @RequestParam Integer departmentNumber,
+                                   Model model) {
+        try {
+            departmentService.deleteByTimesheetAndDepartment(timeSheet, departmentNumber);
+            model.addAttribute("message", "Успешно удалено: табельный номер " + timeSheet + ", отдел " + departmentNumber);
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("message", "Ошибка при удалении: " + ex.getMessage());
+            model.addAttribute("success", false);
+        }
+        return "department-delete";
     }
 }
