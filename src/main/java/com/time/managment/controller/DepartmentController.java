@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,12 +20,31 @@ public class DepartmentController {
 
     @GetMapping("/get")
     public String showForm(Model model, @RequestParam(value = "timesheet", required = false) Integer timesheet) {
-        System.out.println(">>> Контроллер вызван, timesheet = " + timesheet);
-
         if (timesheet != null) {
             List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
             model.addAttribute("departments", departments);
         }
-        return "departments"; // шаблон departments.html
+        return "departments";
+    }
+
+    @GetMapping("/add")
+    public String showForm() {
+        return "departments-add";
+    }
+
+    @PostMapping("/save-to/")
+    public String saveDepartmentViaForm(@RequestParam Integer timeSheet,
+                                        @RequestParam Integer departmentNumber,
+                                        Model model) {
+        try {
+            DepartmentDTO created = departmentService.saveDepartment(timeSheet, departmentNumber);
+            model.addAttribute("message", "Успешно сохранено: " + created.getUser().getUsername()
+                    + " (" + created.getUser().getTimeSheet() + "), отдел: " + created.getDepartment());
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("message", "Ошибка: " + ex.getMessage());
+            model.addAttribute("success", false);
+        }
+        return "departments-add";
     }
 }

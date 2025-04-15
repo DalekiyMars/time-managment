@@ -22,8 +22,11 @@ public class DepartmentRestController {
     }
 
     @PostMapping("/save-to/")
-    public ResponseEntity<DepartmentDTO> saveDepartment(@RequestBody DepartmentCreateRequest request) {
-        DepartmentDTO created = departmentService.saveDepartment(request.getTimeSheet(), request.getDepartmentNumber());
+    public ResponseEntity<DepartmentDTO> saveDepartment(
+            @RequestParam Integer timesheet,
+            @RequestParam Integer departmentNumber
+    ) {
+        DepartmentDTO created = departmentService.saveDepartment(timesheet, departmentNumber);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
