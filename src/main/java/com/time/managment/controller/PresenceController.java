@@ -6,6 +6,7 @@ import com.time.managment.service.PresenceService;
 import com.time.managment.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +19,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
-@RequestMapping("/presence")
 @RequiredArgsConstructor
+@RequestMapping("/presence")
 public class PresenceController {
     private final PresenceService presenceService;
     private final UserService userService;
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
     @GetMapping("/search")
     public String searchPresence(@RequestParam(value = "timeSheet",required = false) Integer timeSheet, Model model) {
         if (timeSheet == null)
@@ -37,11 +39,13 @@ public class PresenceController {
         return "presences-search";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/add-form")
     public String saveNew(){
         return "presence-add";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @PostMapping("/add-form")
     public String savePresence(@RequestParam Integer timeSheet,
                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeMark,
@@ -59,7 +63,7 @@ public class PresenceController {
         }
         return "presence-add";
     }
-
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/all")
     public String getAllPresences(Model model) {
         List<Presence> presences = presenceService.getAllPresence();

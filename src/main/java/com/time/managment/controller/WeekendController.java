@@ -7,6 +7,7 @@ import com.time.managment.entity.Weekend;
 import com.time.managment.service.WeekendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
-@RequestMapping("/weekends")
 @RequiredArgsConstructor
 public class WeekendController {
 
     private final WeekendService weekendService;
 
-    // Отображение страницы поиска выходных по табельному номеру
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
     @GetMapping("/search")
     public String searchWeekends(@RequestParam(value = "timeSheet", required = false) Integer timeSheet,
                                  Model model) {
@@ -38,13 +38,13 @@ public class WeekendController {
         return "weekends-list";
     }
 
-    // Отображение формы для добавления нового выходного дня
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/add-form")
     public String showAddWeekendForm() {
         return "weekend-add";
     }
 
-    // Обработка формы добавления нового выходного дня
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @PostMapping("/add-form")
     public String saveWeekend(@RequestParam Integer userTimeSheet,
                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,
@@ -78,13 +78,13 @@ public class WeekendController {
     }
 
 
-    // Отображение формы для удаления выходного дня
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/delete-form")
     public String showDeleteWeekendForm() {
         return "weekend-delete";
     }
 
-    // Обработка формы удаления выходного дня
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @PostMapping("/delete")
     public String deleteWeekend(@RequestParam Integer timeSheet,
                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,

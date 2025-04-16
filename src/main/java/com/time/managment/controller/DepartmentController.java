@@ -1,8 +1,10 @@
 package com.time.managment.controller;
 
 import com.time.managment.dto.DepartmentDTO;
+import com.time.managment.exceptions.SomethingWentWrong;
 import com.time.managment.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ import java.util.List;
 @RequestMapping("/departments")
 public class DepartmentController {
     private final DepartmentService departmentService;
-
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/get")
     public String showForm(Model model, @RequestParam(value = "timesheet", required = false) Integer timesheet) {
         if (timesheet != null) {
@@ -27,12 +29,14 @@ public class DepartmentController {
         return "departments-search";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/add")
     public String showForm() {
         return "department-add";
     }
 
-    @PostMapping("/save-to/")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PostMapping("/save-to")
     public String saveDepartmentViaForm(@RequestParam Integer timeSheet,
                                         @RequestParam Integer departmentNumber,
                                         Model model) {
@@ -44,15 +48,18 @@ public class DepartmentController {
         } catch (Exception ex) {
             model.addAttribute("message", "Ошибка: " + ex.getMessage());
             model.addAttribute("success", false);
+            throw new SomethingWentWrong("Ошибка сохранения").setModel(model).setModelName("department-add");
         }
         return "department-add";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/delete-form")
     public String showDeleteForm() {
         return "department-delete";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @PostMapping("/delete-form")
     public String deleteDepartment(@RequestParam Integer timeSheet,
                                    @RequestParam Integer departmentNumber,
@@ -64,6 +71,7 @@ public class DepartmentController {
         } catch (Exception ex) {
             model.addAttribute("message", "Ошибка при удалении: " + ex.getMessage());
             model.addAttribute("success", false);
+            throw new SomethingWentWrong("Удаление не прошло").setModel(model).setModelName("department-delete");
         }
         return "department-delete";
     }
