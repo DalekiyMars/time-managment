@@ -23,7 +23,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/records/form", true) // Перенаправление после успешного входа
+                        .defaultSuccessUrl("/home", true) // Перенаправление после успешного входа
                         .permitAll()
                 )
                 .logout(logout -> logout

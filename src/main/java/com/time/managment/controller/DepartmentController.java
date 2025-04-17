@@ -48,7 +48,7 @@ public class DepartmentController {
         } catch (Exception ex) {
             model.addAttribute("message", "Ошибка: " + ex.getMessage());
             model.addAttribute("success", false);
-            throw new SomethingWentWrong("Ошибка сохранения").setModel(model).setModelName("department-add");
+            throw new SomethingWentWrong("Ошибка сохранения").setModelName("department-add");
         }
         return "department-add";
     }
@@ -71,7 +71,7 @@ public class DepartmentController {
         } catch (Exception ex) {
             model.addAttribute("message", "Ошибка при удалении: " + ex.getMessage());
             model.addAttribute("success", false);
-            throw new SomethingWentWrong("Удаление не прошло").setModel(model).setModelName("department-delete");
+            throw new SomethingWentWrong("Удаление не прошло").setModelName("department-delete");
         }
         return "department-delete";
     }

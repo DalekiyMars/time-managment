@@ -3,6 +3,7 @@ package com.time.managment.controller;
 import com.time.managment.dto.CombinedRecordDTO;
 import com.time.managment.service.RecordsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecordsController {
     private final RecordsService recordsService;
-
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/form")
     public String showCombinedRecords() {
         return "records";
     }
-
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping
     public String getRecords(
             @RequestParam(value = "period", defaultValue = "week") String period,

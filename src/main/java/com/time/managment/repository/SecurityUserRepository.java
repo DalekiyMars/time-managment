@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface SecurityUserRepository extends JpaRepository<SecurityUser, Integer> {
     Optional<SecurityUser> findByUsername(String username);
+    SecurityUser findByTimesheet(Integer timesheet);
 }

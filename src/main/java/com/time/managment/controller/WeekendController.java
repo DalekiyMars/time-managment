@@ -38,6 +38,8 @@ public class WeekendController {
         return "weekends-list";
     }
 
+    //FIXME пиздец падаем при попытке
+    //FIXME добавить проверку что пользователь принадлежит департаменту что и менеджер который его запрашивает
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/add-form")
     public String showAddWeekendForm() {

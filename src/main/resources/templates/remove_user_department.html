@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Удалить департамент у пользователя</title>
+</head>
+<body>
+<h1>Удалить департамент у пользователя</h1>
+
+<form action="#" th:action="@{/user-departments/remove}" method="post">
+    <label for="userTimesheet">Timesheet пользователя:</label>
+    <input type="number" id="userTimesheet" name="userTimesheet" th:value="${userTimesheet}">
+
+    <label for="departmentId">ID департамента:</label>
+    <input type="number" id="departmentId" name="departmentId" th:value="${departmentId}">
+
+    <button type="submit">Удалить</button>
+</form>
+</body>
+</html>

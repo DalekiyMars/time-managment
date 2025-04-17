@@ -4,10 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
-    
+
+
     <changeSet id="0-0-5" author="Eugene">
         <createTable tableName="sec_users">
-            <column name="id" type="BIGSERIAL" autoIncrement="true">
+            <column name="id" type="SERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="username" type="VARCHAR(100)">
@@ -17,20 +18,46 @@
                 <constraints nullable="false"/>
             </column>
             <column name="timesheet" type="INT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="sec_user_roles">
+            <column name="user_timesheet" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    
-        <createTable tableName="sec_user_roles">
-            <column name="user_id" type="BIGSERIAL"/>
-            <column name="role" type="VARCHAR(50)"/>
-    
-        </createTable>
-    
+
         <addForeignKeyConstraint
                 baseTableName="sec_user_roles"
-                baseColumnNames="user_id"
+                baseColumnNames="user_timesheet"
                 referencedTableName="sec_users"
-                referencedColumnNames="id" constraintName="fk_sec_user_id_id"/>
+                referencedColumnNames="timesheet"
+                constraintName="fk_sec_user_timesheet"/>
+    </changeSet>
+
+    <!-- Добавление таблицы для департаментов -->
+    <changeSet id="0-0-6" author="Eugene">
+        <createTable tableName="user_departments">
+            <column name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_timesheet" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department_number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_departments"
+                baseColumnNames="user_timesheet"
+                referencedTableName="sec_users"
+                referencedColumnNames="timesheet"
+                constraintName="fk_user_departments_user_timesheet"/>
     </changeSet>
 </databaseChangeLog>

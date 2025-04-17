@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f5;
+            padding: 40px;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: block;
+            margin: 10px auto;
+            padding: 12px 24px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Добро пожаловать!</h1>
+    <p>Выберите действие:</p>
+
+    <!-- Доступно всем: USER, MANAGER, ADMIN -->
+    <a class="btn" th:href="@{/search}">Посмотреть выходные</a>
+    <a class="btn" th:href="@{/presence/search}">Поиск по посещаемости</a>
+    <a class="btn" th:href="@{/records/form}">Просмотр отчета</a>
+
+    <!-- MANAGER и ADMIN -->
+    <div sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+        <a class="btn" th:href="@{/add-form}">Добавить выходной</a>
+        <a class="btn" th:href="@{/delete-form}">Удалить выходной</a>
+        <a class="btn" th:href="@{/presence/add-form}">Добавить посещение</a>
+        <a class="btn" th:href="@{/presence/all}">Список всех посещений</a>
+    </div>
+
+    <!-- Только ADMIN -->
+    <div sec:authorize="hasRole('ADMIN')">
+        <a class="btn" th:href="@{/admin/users}">Управление пользователями</a>
+    </div>
+</div>
+
+</body>
+</html>

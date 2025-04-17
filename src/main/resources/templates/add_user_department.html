@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Департаменты пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Департаменты пользователя с табельным номером: <span th:text="${timesheet}"></span></h2>
+
+    <div class="form-container">
+        <form th:action="@{/user-departments/{timesheet}(timesheet=${timesheet})}" method="post">
+            <label for="timesheet">Табельный номер пользователя:</label>
+            <input type="number" id="timesheet" name="timesheet" th:value="${timesheet}" required>
+
+            <label for="departmentNumber">Номер департамента:</label>
+            <input type="number" id="departmentNumber" name="departmentNumber" required>
+            <button type="submit">Добавить департамент</button>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Номер департамента</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="department : ${departments}">
+            <td th:text="${department.departmentNumber}"></td>
+            <td>
+                <form th:action="@{/user-departments/{timesheet}/{departmentNumber}(timesheet=${timesheet}, departmentNumber=${department.departmentNumber})}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

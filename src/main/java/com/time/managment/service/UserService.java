@@ -57,4 +57,8 @@ public class UserService {
             throw new NoSuchElementException(Constants.ExceptionDescriptions.NO_SUCH_ELEMENT);
         }
     }
+
+    public boolean existsByTimesheet(Integer timesheet){
+        return userRepository.existsByTimeSheet(timesheet);
+    }
 }
