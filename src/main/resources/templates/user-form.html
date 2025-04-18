@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление пользователями</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 24px;
+        }
+
+        a.button {
+            display: block;
+            margin: 10px auto;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 80%;
+        }
+
+        a.button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Управление пользователями</h2>
+    <a class="button" th:href="@{/users/add-form}">Добавить пользователя</a>
+    <a class="button" th:href="@{/users/search}">Найти пользователя</a>
+    <a class="button" th:href="@{/users/update-form}">Обновить пользователя</a>
+    <a class="button" th:href="@{/users/delete-form}">Удалить пользователя</a>
+    <a class="button" th:href="@{/users/all}">Список всех пользователей</a>
+</div>
+</body>
+</html>

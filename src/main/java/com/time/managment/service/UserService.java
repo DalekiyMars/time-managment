@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class UserService {
             return userMapper.toUserDto(userRepository.save(user));
         } else {
             log.error("Error saving user " + user);
-            throw new SomethingWentWrong(Constants.ExceptionDescriptions.NO_SUCH_ELEMENT);
+            throw new SomethingWentWrong(Constants.ExceptionMessages.TIMESHEET_ALREADY_EXISTS);
         }
     }
 
@@ -60,5 +62,12 @@ public class UserService {
 
     public boolean existsByTimesheet(Integer timesheet){
         return userRepository.existsByTimeSheet(timesheet);
+    }
+
+    public List<UserDTO> getAll(){
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 }

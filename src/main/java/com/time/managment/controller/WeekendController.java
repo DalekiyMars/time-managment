@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
+@RequestMapping("/weekends")
 @RequiredArgsConstructor
 public class WeekendController {
 

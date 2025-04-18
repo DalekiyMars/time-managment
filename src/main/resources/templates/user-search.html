@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            width: 100%;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .message {
+            color: red;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Поиск пользователя</h2>
+    <form th:action="@{/users/search-result}" method="get">
+        <label>Введите табельный номер:</label>
+        <label>
+            <input type="number" name="timeSheet" required/>
+        </label>
+        <button type="submit">Найти</button>
+    </form>
+
+    <div class="result" th:if="${user}">
+        <p><strong>Имя:</strong> <span th:text="${user.username}"></span></p>
+        <p><strong>Табельный номер:</strong> <span th:text="${user.timeSheet}"></span></p>
+    </div>
+
+    <div class="message" th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
+    </div>
+</div>
+</body>
+</html>

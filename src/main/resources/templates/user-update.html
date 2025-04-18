@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Обновление пользователя</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7fa; }
+        .container {
+            max-width: 600px; margin: 0 auto; padding: 20px;
+            background-color: white; border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        label { display: block; margin-bottom: 8px; }
+        input {
+            width: 100%; padding: 8px;
+            margin-bottom: 12px; box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px; background-color: #007bff;
+            color: white; border: none; border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+        .message { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Обновить пользователя</h2>
+    <form th:action="@{/users/update}" method="post">
+        <label>Табельный номер (по которому ищем):</label>
+        <label>
+            <input type="number" name="timeSheet" required/>
+        </label>
+        <label>Новое имя пользователя:</label>
+        <label>
+            <input type="text" name="username" required/>
+        </label>
+        <button type="submit">Обновить</button>
+    </form>
+    <div class="message" th:if="${message}" th:text="${message}"></div>
+</div>
+</body>
+</html>

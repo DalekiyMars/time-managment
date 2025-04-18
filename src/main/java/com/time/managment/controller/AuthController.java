@@ -33,7 +33,7 @@ public class AuthController {
 
     @GetMapping("/home")
     public String homePage() {
-        return "home"; // имя твоего шаблона home.html
+        return "home"; // имя твоего шаблона home.user-delete.html
     }
 
     @PostMapping("/register")

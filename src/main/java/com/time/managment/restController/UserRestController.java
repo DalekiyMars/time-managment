@@ -12,7 +12,7 @@ import com.time.managment.service.UserService;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserRestController {
     private final UserService userService;

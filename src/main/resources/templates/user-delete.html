@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Удаление пользователя</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7fa; }
+        .container {
+            max-width: 600px; margin: 0 auto; padding: 20px;
+            background-color: white; border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        label { display: block; margin-bottom: 8px; }
+        input {
+            width: 100%; padding: 8px;
+            margin-bottom: 12px; box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px; background-color: #dc3545;
+            color: white; border: none; border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #c82333; }
+        .message { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Удалить пользователя</h2>
+    <form th:action="@{/users/delete}" method="post">
+        <label>Введите табельный номер:</label>
+        <label>
+            <input type="number" name="timeSheet" required/>
+        </label>
+        <button type="submit">Удалить</button>
+    </form>
+    <div class="message" th:if="${message}" th:text="${message}"></div>
+</div>
+</body>
+</html>
