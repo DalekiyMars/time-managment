@@ -24,6 +24,12 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        log.info("🧪 Config: username={}, password={}, timesheet={}, fullUserInitials={}",
+                adminProperties.getUsername(),
+                adminProperties.getPassword(),
+                adminProperties.getTimesheet(),
+                adminProperties.getFullUserInitials());
+        
         if (securityUserRepository.findByUsername(adminProperties.getUsername()).isEmpty()) {
             User user = new User()
                             .setUsername(adminProperties.getFullUserInitials())
