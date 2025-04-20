@@ -15,4 +15,11 @@ public class Constants {
     public static class ClassicMessages{
         public static final String INFO_DELETED_SUCCESSFULLY = "Информация о выходном удалена.";
     }
+    public static class PasswordValues{
+        public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        public static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+        public static final String DIGITS = "0123456789";
+        public static final String ALL = UPPER + LOWER + DIGITS;
+        public static final int DEFAULT_LENGTH = 9;
+    }
 }

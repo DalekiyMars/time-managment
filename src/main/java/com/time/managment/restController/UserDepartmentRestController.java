@@ -16,7 +16,6 @@ public class UserDepartmentRestController {
     private final UserDepartmentService userDepartmentService;
     @PostMapping("/{timesheet}")
     public ResponseEntity<Void> addDepartmentToUser(@PathVariable Integer timesheet, @RequestBody Integer departmentNumber) {
-        // Допустим, ты уже получаешь пользователя по timesheet
         SecurityUser user = new SecurityUser();
         user.setTimesheet(timesheet); // Заглушка. На самом деле ты должен получить пользователя из БД.
 
@@ -26,7 +25,6 @@ public class UserDepartmentRestController {
 
     @GetMapping("/{timesheet}")
     public ResponseEntity<List<UserDepartment>> getDepartmentsForUser(@PathVariable Integer timesheet) {
-        // Допустим, ты уже получаешь пользователя по timesheet
         SecurityUser user = new SecurityUser();
         user.setTimesheet(timesheet); // Заглушка, на самом деле, нужно получить из БД.
 
@@ -36,7 +34,6 @@ public class UserDepartmentRestController {
 
     @DeleteMapping("/{timesheet}/{departmentNumber}")
     public ResponseEntity<Void> removeDepartmentFromUser(@PathVariable Integer timesheet, @PathVariable Integer departmentNumber) {
-        // Получение пользователя и удаление департамента
         SecurityUser user = new SecurityUser();
         user.setTimesheet(timesheet); // Заглушка
 

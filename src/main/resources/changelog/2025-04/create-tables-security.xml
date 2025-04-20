@@ -21,7 +21,10 @@
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
-
+        <addUniqueConstraint
+                tableName="sec_users"
+                columnNames="timesheet"
+                constraintName="uq_sec_users_timesheet" />
         <createTable tableName="sec_user_roles">
             <column name="user_timesheet" type="INTEGER">
                 <constraints nullable="false"/>

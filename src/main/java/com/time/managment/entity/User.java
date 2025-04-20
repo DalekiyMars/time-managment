@@ -27,4 +27,7 @@ public class User {
     @NotNull
     @Column(name = "timesheet")
     private Integer timeSheet;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private SecurityUser securityUser;
 }

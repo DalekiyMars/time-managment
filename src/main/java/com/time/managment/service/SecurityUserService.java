@@ -10,10 +10,6 @@ import org.springframework.stereotype.Service;
 public class SecurityUserService {
     private final SecurityUserRepository userRepository;
 
-    public boolean existsByUsername(String username){
-        return userRepository.findByUsername(username).isPresent();
-    }
-
     public void save(SecurityUser user){
         userRepository.save(user);
     }
