@@ -45,7 +45,6 @@ public class WeekendController {
         return "weekend-add";
     }
 
-    //FIXME не работает
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @PostMapping("/add-form")
     public String saveWeekend(@RequestParam Integer userTimeSheet,

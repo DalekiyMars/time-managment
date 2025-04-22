@@ -26,18 +26,20 @@ public class UserController {
     public String showAddUserForm() {
         return "user-add";
     }
+
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @PostMapping("/add")
     public String addUser(@RequestParam String username,
                           @RequestParam Integer timeSheet,
                           Model model) {
         try {
-            User user = new User();
-            user.setUsername(username);
-            user.setTimeSheet(timeSheet);
+            User user = new User()
+                    .setUsername(username)
+                    .setTimeSheet(timeSheet);
 
-            userService.saveUser(user);
-            model.addAttribute("message", "Пользователь успешно добавлен!");
+            var saved = userService.saveUser(user);
+            model.addAttribute("message", "Пользователь добавлен: логин — " + saved.getUsername() +
+                    ", пароль — " + saved.getPassword());
         } catch (Exception e) {
             model.addAttribute("message", "Ошибка при добавлении пользователя: " + e.getMessage());
         }
@@ -48,9 +50,9 @@ public class UserController {
     public String editUser(@PathVariable Integer timesheet, Model model) {
         try {
             UserDTO userDTO = userService.getUserDTO(timesheet);
-            User user = new User();
-            user.setUsername(userDTO.getUsername());
-            user.setTimeSheet(userDTO.getTimeSheet());
+            User user = new User()
+                    .setUsername(userDTO.getUsername())
+                    .setTimeSheet(userDTO.getTimeSheet());
             model.addAttribute("user", user);
             return "user-update";
         } catch (Exception e) {

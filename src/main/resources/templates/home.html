@@ -106,20 +106,11 @@
     </div>
 
     <!-- ПОЛЬЗОВАТЕЛИ -->
-    <div class="section" sec:authorize="hasAnyRole('USER','MANAGER','ADMIN')">
+    <div class="section" sec:authorize="hasAnyRole('MANAGER','ADMIN')">
         <h2>Пользователи</h2>
         <table class="btn-table">
             <tr>
                 <td><a class="btn" th:href="@{/users/form}">Действия с пользователями</a></td>
-                <td><a class="btn" th:href="@{/users/search}">Найти по табельному</a></td>
-                <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
-                    <a class="btn" th:href="@{/users/add-form}">Добавить пользователя</a>
-                </td>
-            </tr>
-            <tr sec:authorize="hasAnyRole('MANAGER','ADMIN')">
-                <td><a class="btn" th:href="@{/users/delete-form}">Удалить пользователя</a></td>
-                <td><a class="btn" th:href="@{/users/all}">Список пользователей</a></td>
-                <td></td>
             </tr>
         </table>
     </div>

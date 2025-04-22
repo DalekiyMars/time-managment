@@ -29,7 +29,7 @@ public class UserDepartmentController {
         model.addAttribute("departments", departments);
         model.addAttribute("timesheet", timesheet);
 
-        return "add_user_department";
+        return "add-user-department";
     }
 
     @PreAuthorize("hasRole('ADMIN')")

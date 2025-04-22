@@ -25,7 +25,7 @@ public class Weekend {
     private Integer userTimeSheet;
     @Column(name = "reason")
     @ValidAbsenceReason
-    @Enumerated(EnumType.STRING) // Храним строковое значение перечисления в базе данных
+    @Enumerated(EnumType.STRING)
     private AbsenceReason reason;
     @Column(name = "weekend_date", columnDefinition = "DATE")
     private LocalDate weekendDate;

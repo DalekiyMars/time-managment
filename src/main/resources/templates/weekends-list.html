@@ -87,9 +87,15 @@
 
     <ul th:if="${weekends != null}">
         <li th:each="weekend : ${weekends}">
-            <span th:text="${#temporals.format(weekend.weekendDate, 'dd.MM.yyyy')} + ' — ' + ${weekend.reasonDisplay}"></span>
+        <span th:if="${weekend.startTime == null and weekend.endTime == null}"
+              th:text="${#temporals.format(weekend.weekendDate, 'dd.MM.yyyy')} + ' — ' + ${weekend.reasonDisplay}">
+        </span>
+            <span th:if="${weekend.startTime != null or weekend.endTime != null}"
+                  th:text="${#temporals.format(weekend.weekendDate, 'dd.MM.yyyy')} + ' — ' + ${weekend.reasonDisplay} + ' (' + ${weekend.startTime} + ' - ' + ${weekend.endTime} + ')'">
+        </span>
         </li>
     </ul>
+
 </div>
 </body>
 </html>

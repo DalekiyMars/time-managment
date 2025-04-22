@@ -1,0 +1,17 @@
+admin:
+  username:
+  password:
+  timesheet:
+  full-user-initials:
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    name: admin
+    password: secret
+    url: jdbc:postgresql://localhost:5440/timeManagement
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none

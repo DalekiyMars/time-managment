@@ -40,14 +40,14 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO saveUser(User user) {
+    public SecurityUser saveUser(User user) {
         if (!userRepository.existsByTimeSheet(user.getTimeSheet())) {
             userRepository.save(user);
 
             // Генерация логина для SecurityUser
             String generatedUsername = generateUsername(user.getUsername(), user.getTimeSheet());
 
-            var generatedPassword =PasswordGenerator.generate();
+            var generatedPassword = PasswordGenerator.generate();
             // Создание связанного SecurityUser
             SecurityUser secUser = new SecurityUser().setUsername(generatedUsername)
                                                     .setPassword(passwordEncoder.encode(generatedPassword))
@@ -56,7 +56,7 @@ public class UserService {
 
             securityUserService.save(secUser);
             log.info(String.format("User создан: %s с паролем %s", secUser.getUsername(), generatedPassword));
-            return userMapper.toUserDto(user);
+            return secUser.setPassword(generatedPassword);
         } else {
             log.error("Error saving user " + user);
             throw new SomethingWentWrong(Constants.ExceptionMessages.TIMESHEET_ALREADY_EXISTS);

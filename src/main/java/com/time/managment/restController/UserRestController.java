@@ -1,5 +1,6 @@
 package com.time.managment.restController;
 
+import com.time.managment.entity.SecurityUser;
 import com.time.managment.entity.User;
 import com.time.managment.dto.UserDTO;
 import jakarta.validation.Valid;
@@ -18,7 +19,7 @@ public class UserRestController {
     private final UserService userService;
 
     @PostMapping("/add-new")
-    public UserDTO saveNewUser(@RequestBody @Valid User user){
+    public SecurityUser saveNewUser(@RequestBody @Valid User user){
         return userService.saveUser(user);
     }
 

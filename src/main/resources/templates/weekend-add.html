@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Добавить выходной</title>
@@ -70,7 +70,7 @@
 <body>
 <div class="container">
     <h1>Добавить выходной</h1>
-    <form method="post" th:action="@{/api/weekends/add-form}">
+    <form method="post" th:action="@{/weekends/add-form}">
         <div>
             <label for="userTimeSheet">Табельный номер</label>
             <input type="number" id="userTimeSheet" name="userTimeSheet" required />
