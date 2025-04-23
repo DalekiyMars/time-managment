@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Controller
@@ -22,26 +23,25 @@ public class DepartmentController {
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/get")
     public String showForm(Model model, @RequestParam(value = "timesheet", required = false) Integer timesheet) {
-        if (timesheet != null) {
-            List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
+        if (Objects.nonNull(timesheet)) {
+            final List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
             model.addAttribute("departments", departments);
         }
         return "departments-search";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/add")
     public String showForm() {
         return "department-add";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/save-to")
     public String saveDepartmentViaForm(@RequestParam Integer timeSheet,
                                         @RequestParam Integer departmentNumber,
                                         Model model) {
         try {
-            DepartmentDTO created = departmentService.saveDepartment(timeSheet, departmentNumber);
+            final DepartmentDTO created = departmentService.saveDepartment(timeSheet, departmentNumber);
             model.addAttribute("message", "Успешно сохранено: " + created.getUser().getUsername()
                     + " (" + created.getUser().getTimeSheet() + "), отдел: " + created.getDepartment());
             model.addAttribute("success", true);
@@ -53,13 +53,13 @@ public class DepartmentController {
         return "department-add";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/delete-form")
     public String showDeleteForm() {
         return "department-delete";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    //FIXME не удаляется
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/delete-form")
     public String deleteDepartment(@RequestParam Integer timeSheet,
                                    @RequestParam Integer departmentNumber,

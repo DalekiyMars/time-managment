@@ -33,13 +33,13 @@ public class WeekendService {
     }
 
     public WeekendDTO saveWeekend(Weekend weekend) {
-        Weekend savedWeekend = weekendRepository.save(weekend);
+        final Weekend savedWeekend = weekendRepository.save(weekend);
         return weekendMapper.toWeekendDTO(savedWeekend);
     }
 
     @Transactional
     public void deleteWeekend(WeekendToDelete dto) {
-        Weekend weekend = weekendRepository.findByUserTimeSheetAndWeekendDate(dto.getTimeSheet(), dto.getWeekendDate())
+        final Weekend weekend = weekendRepository.findByUserTimeSheetAndWeekendDate(dto.getTimeSheet(), dto.getWeekendDate())
                 .orElseThrow(() -> new NoSuchElementException("Такой выходной не найден."));
         weekendRepository.delete(weekend);
     }

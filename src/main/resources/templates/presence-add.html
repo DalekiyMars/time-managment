@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <title>Добавить присутствие</title>
     <style>
@@ -19,7 +19,7 @@
 <body>
 <div class="container">
     <h1>Добавить присутствие</h1>
-    <form th:action="@{/presence/add-form}" method="post">
+    <form th:action="@{/presences/add-form}" method="post">
         <label for="timeSheet">Табельный номер:</label>
         <input type="number" name="timeSheet" id="timeSheet" required>
 

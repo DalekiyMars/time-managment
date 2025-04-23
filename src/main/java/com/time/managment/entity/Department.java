@@ -5,12 +5,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "departments")
 @NoArgsConstructor
+@Accessors(chain = true)
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

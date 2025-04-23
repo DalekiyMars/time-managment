@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 @RequestMapping("/weekends")
 @RequiredArgsConstructor
 public class WeekendController {
-
     private final WeekendService weekendService;
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
@@ -30,7 +29,7 @@ public class WeekendController {
                                  Model model) {
         if (timeSheet != null) {
             try {
-                List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
+                final List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
                 model.addAttribute("weekends", weekends);
             } catch (NoSuchElementException e) {
                 model.addAttribute("errorMessage", "Сотрудник с таким табельным номером не найден.");
@@ -45,7 +44,7 @@ public class WeekendController {
         return "weekend-add";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/add-form")
     public String saveWeekend(@RequestParam Integer userTimeSheet,
                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,
@@ -54,10 +53,10 @@ public class WeekendController {
                               @RequestParam String reason,
                               Model model) {
         try {
-            AbsenceReason parsedReason = AbsenceReason.fromString(reason);
+            final var parsedReason = AbsenceReason.fromString(reason);
 
             // Проверка на наличие такой же записи
-            boolean exists = weekendService.existsByFields(userTimeSheet, weekendDate, startTime, endTime, parsedReason);
+            final boolean exists = weekendService.existsByFields(userTimeSheet, weekendDate, startTime, endTime, parsedReason);
 
             if (exists) {
                 model.addAttribute("message", "Ошибка: такая запись уже существует.");
@@ -85,13 +84,13 @@ public class WeekendController {
         return "weekend-delete";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/delete")
     public String deleteWeekend(@RequestParam Integer timeSheet,
                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,
                                 Model model) {
         try {
-            WeekendToDelete toDelete = new WeekendToDelete(timeSheet, String.valueOf(weekendDate));
+            final var toDelete = new WeekendToDelete(timeSheet, String.valueOf(weekendDate));
             weekendService.deleteWeekend(toDelete);
             model.addAttribute("message", "Выходной успешно удалён.");
             model.addAttribute("success", true);
@@ -99,6 +98,6 @@ public class WeekendController {
             model.addAttribute("message", "Ошибка при удалении: " + e.getMessage());
             model.addAttribute("success", false);
         }
-        return "weekend-delete"; // возвращаем форму удаления
+        return "weekend-delete";
     }
 }

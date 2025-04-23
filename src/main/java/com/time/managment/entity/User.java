@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -27,6 +30,9 @@ public class User {
     @NotNull
     @Column(name = "timesheet")
     private Integer timeSheet;
+
+    @OneToMany(mappedBy = "userTimeSheet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Department> departments = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private SecurityUser securityUser;

@@ -45,7 +45,7 @@ public class UserService {
             userRepository.save(user);
 
             // Генерация логина для SecurityUser
-            String generatedUsername = generateUsername(user.getUsername(), user.getTimeSheet());
+            final String generatedUsername = generateUsername(user.getUsername(), user.getTimeSheet());
 
             var generatedPassword = PasswordGenerator.generate();
             // Создание связанного SecurityUser
@@ -65,7 +65,7 @@ public class UserService {
 
     @Transactional
     public UserDTO updateUser(Integer timeSheet, User updatedUser) {
-        User existingUser = userRepository.findByTimeSheet(timeSheet)
+        final User existingUser = userRepository.findByTimeSheet(timeSheet)
                 .orElseThrow(() -> new NoSuchElementException("User not found with timesheet: " + updatedUser.getTimeSheet()));
 
         existingUser.setUsername(updatedUser.getUsername());
@@ -94,7 +94,7 @@ public class UserService {
      */
     private String generateUsername(String fullName, Integer timesheet) {
         // Находим все слова, начинающиеся с заглавной
-        List<String> parts = Arrays.stream(fullName.split("(?=\\p{Lu})"))
+        final List<String> parts = Arrays.stream(fullName.split("(?=\\p{Lu})"))
                 .filter(s -> !s.isBlank())
                 .toList();
 

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-
     private final UserService userService;
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/form")
@@ -33,11 +32,11 @@ public class UserController {
                           @RequestParam Integer timeSheet,
                           Model model) {
         try {
-            User user = new User()
+            final var user = new User()
                     .setUsername(username)
                     .setTimeSheet(timeSheet);
 
-            var saved = userService.saveUser(user);
+            final var saved = userService.saveUser(user);
             model.addAttribute("message", "Пользователь добавлен: логин — " + saved.getUsername() +
                     ", пароль — " + saved.getPassword());
         } catch (Exception e) {
@@ -49,8 +48,8 @@ public class UserController {
     @GetMapping("/edit/{timesheet}")
     public String editUser(@PathVariable Integer timesheet, Model model) {
         try {
-            UserDTO userDTO = userService.getUserDTO(timesheet);
-            User user = new User()
+            final var userDTO = userService.getUserDTO(timesheet);
+            final var user = new User()
                     .setUsername(userDTO.getUsername())
                     .setTimeSheet(userDTO.getTimeSheet());
             model.addAttribute("user", user);
@@ -60,11 +59,11 @@ public class UserController {
             return "redirect:/users/form";
         }
     }
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/update")
     public String updateUser(@ModelAttribute User user, Model model) {
         try {
-            UserDTO updated = userService.updateUser(user.getTimeSheet(), user);
+            final UserDTO updated = userService.updateUser(user.getTimeSheet(), user);
             model.addAttribute("message", "Обновлено: " + updated.getUsername());
             model.addAttribute("success", true);
         } catch (Exception e) {
@@ -73,7 +72,7 @@ public class UserController {
         }
         return "user-update";
     }
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/delete")
     public String deleteUser(@RequestParam Integer timeSheet, Model model) {
         try {
@@ -91,6 +90,7 @@ public class UserController {
     public String showDeleteForm() {
         return "user-delete";
     }
+
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/all")
     public String getAllUsers(Model model) {
@@ -106,7 +106,7 @@ public class UserController {
     @GetMapping("/search-result")
     public String searchUserByTimesheet(@RequestParam Integer timeSheet, Model model) {
         try {
-            UserDTO user = userService.getUserDTO(timeSheet);
+            final var user = userService.getUserDTO(timeSheet);
             model.addAttribute("user", user);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Пользователь не найден.");

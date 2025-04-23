@@ -12,5 +12,4 @@ import java.util.Optional;
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
     List<Department> findAllByUserTimeSheet_TimeSheet(Integer timeSheet);
     Optional<Department> findByUserTimeSheetAndDepartment(User user, Integer department);
-
 }

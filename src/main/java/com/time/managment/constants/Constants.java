@@ -17,7 +17,7 @@ public class Constants {
     }
     public static class PasswordValues{
         public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        public static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+        public static final String LOWER = UPPER.toLowerCase();
         public static final String DIGITS = "0123456789";
         public static final String ALL = UPPER + LOWER + DIGITS;
         public static final int DEFAULT_LENGTH = 9;

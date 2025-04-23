@@ -20,41 +20,48 @@ import java.util.NoSuchElementException;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/presence")
+@RequestMapping("/presences")
 public class PresenceController {
     private final PresenceService presenceService;
     private final UserService userService;
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
     @GetMapping("/search")
-    public String searchPresence(@RequestParam(value = "timeSheet",required = false) Integer timeSheet, Model model) {
-        if (timeSheet == null)
-            return "presences-search";
+    public String showSearchForm() {
+        return "presences-search";
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet)) " +
+            "or (hasRole('USER') and @accessService.isSelf(#timeSheet))")
+    @GetMapping(value = "/search", params = "timeSheet")
+    public String searchPresence(@RequestParam("timeSheet") Integer timeSheet, Model model) {
         try {
             List<PresenceDTO> presences = presenceService.getPresences(timeSheet);
             model.addAttribute("presences", presences);
         } catch (NoSuchElementException e) {
             model.addAttribute("errorMessage", "Сотрудник с таким табельным номером не найден.");
         }
+
         return "presences-search";
     }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/add-form")
-    public String saveNew(){
+    public String saveNew() {
         return "presence-add";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/add-form")
     public String savePresence(@RequestParam Integer timeSheet,
                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeMark,
                                Model model) {
         try {
-            Presence presence = new Presence();
-            presence.setTimeMark(timeMark);
-            presence.setUserTimeSheet(userService.getUser(timeSheet));
-            PresenceDTO saved = presenceService.savePresence(presence);
+            final Presence presence = new Presence()
+                    .setTimeMark(timeMark)
+                    .setUserTimeSheet(userService.getUser(timeSheet));
+
+            final PresenceDTO saved = presenceService.savePresence(presence);
             model.addAttribute("message", "Сохранено: " + saved.getUser().getUsername() + " — " + saved.getTimeMark());
             model.addAttribute("success", true);
         } catch (Exception ex) {
@@ -63,10 +70,11 @@ public class PresenceController {
         }
         return "presence-add";
     }
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public String getAllPresences(Model model) {
-        List<Presence> presences = presenceService.getAllPresence();
+        final List<Presence> presences = presenceService.getAllPresence();
         model.addAttribute("presences", presences);
         return "presences-list";
     }
