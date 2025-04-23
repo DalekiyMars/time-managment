@@ -29,21 +29,20 @@ public class DepartmentService {
     }
 
     public DepartmentDTO saveDepartment(Integer timeSheet, Integer departmentNumber) {
-        User user = userService.getUser(timeSheet);
-        Optional<Department> existing = repository.findByUserTimeSheetAndDepartment(user, departmentNumber);
+        final User user = userService.getUser(timeSheet);
+        final Optional<Department> existing = repository.findByUserTimeSheetAndDepartment(user, departmentNumber);
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Такой отдел уже существует для указанного табельного номера.");
         }
 
-        Department department = new Department(departmentNumber);
-        department.setUserTimeSheet(user);
+        final Department department = new Department(departmentNumber)
+                .setUserTimeSheet(user);
 
         return mapper.toDepartmentDTO(repository.save(department));
     }
 
     public void deleteByTimesheetAndDepartment(Integer timesheet, Integer departmentNumber) {
-        var usr = userService.getUser(timesheet);
-        Department department = repository.findByUserTimeSheetAndDepartment(usr, departmentNumber)
+        final Department department = repository.findByUserTimeSheetAndDepartment(userService.getUser(timesheet), departmentNumber)
                 .orElseThrow(() -> new RuntimeException("Department not found with timesheet: " + timesheet + " and department: " + departmentNumber));
         repository.delete(department);
     }

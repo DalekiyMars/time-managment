@@ -36,7 +36,22 @@ public class SecurityUser {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserDepartment> userDepartments = new HashSet<>();
+
     @OneToOne
     @JoinColumn(name = "timesheet", referencedColumnName = "timeSheet", insertable = false, updatable = false)
     private User user;
+
+    public boolean hasRole(String role) {
+        return roles.stream()
+                .anyMatch(r -> r.name().equalsIgnoreCase(role));
+    }
+
+    public boolean hasAnyRole(String... rolesToCheck) {
+        for (String role : rolesToCheck) {
+            if (hasRole(role)) return true;
+        }
+        return false;
+    }
 }

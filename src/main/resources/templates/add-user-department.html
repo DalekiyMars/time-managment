@@ -50,38 +50,56 @@
 <body>
 
 <div class="container">
-    <h2>Департаменты пользователя с табельным номером: <span th:text="${timesheet}"></span></h2>
+    <h2>Департаменты пользователя</h2>
 
+    <!-- Поиск по табельному номеру -->
     <div class="form-container">
-        <form th:action="@{/user-departments/{timesheet}(timesheet=${timesheet})}" method="post">
-            <label for="timesheet">Табельный номер пользователя:</label>
-            <input type="number" id="timesheet" name="timesheet" th:value="${timesheet}" required>
+        <form th:action="@{/user-departments/manage}" method="get">
+            <label for="timesheet">Введите табельный номер:</label>
+            <input type="number" id="timesheet" name="timesheet" required
+                   th:value="${timesheet}">
+            <button type="submit">Показать</button>
+        </form>
+    </div>
 
+    <!-- Если timesheet уже передан, показать форму добавления -->
+    <div class="form-container" th:if="${timesheet != null}">
+        <form th:action="@{/user-departments/add}" method="post">
+            <input type="hidden" name="timesheet" th:value="${timesheet}">
             <label for="departmentNumber">Номер департамента:</label>
             <input type="number" id="departmentNumber" name="departmentNumber" required>
             <button type="submit">Добавить департамент</button>
         </form>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Номер департамента</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="department : ${departments}">
-            <td th:text="${department.departmentNumber}"></td>
-            <td>
-                <form th:action="@{/user-departments/{timesheet}/{departmentNumber}(timesheet=${timesheet}, departmentNumber=${department.departmentNumber})}" method="post">
-                    <input type="hidden" name="_method" value="delete"/>
-                    <button type="submit">Удалить</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Таблица департаментов -->
+    <div th:if="${departments != null}">
+        <table>
+            <thead>
+            <tr>
+                <th>Номер департамента</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="department : ${departments}">
+                <td th:text="${department.departmentNumber}"></td>
+                <td>
+                    <form th:action="@{/user-departments/delete}" method="post">
+                        <input type="hidden" name="timesheet" th:value="${timesheet}">
+                        <input type="hidden" name="departmentNumber" th:value="${department.departmentNumber}">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Сообщения об успехе или ошибке -->
+    <div th:if="${message}">
+        <p th:text="${message}" th:classappend="${success} ? 'text-success' : 'text-danger'"></p>
+    </div>
 </div>
 
 </body>

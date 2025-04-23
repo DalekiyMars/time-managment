@@ -20,14 +20,14 @@ public class WeekendRestController {
     // Получить список выходных по timesheet
     @GetMapping("/{timeSheet}")
     public ResponseEntity<List<WeekendDTO>> getWeekends(@PathVariable Integer timeSheet) {
-        List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
+        final List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
         return ResponseEntity.ok(weekends);
     }
 
     // Сохранить выходной день
     @PostMapping("/add")
     public ResponseEntity<WeekendDTO> addWeekend(@RequestBody Weekend weekend) {
-        WeekendDTO savedWeekend = weekendService.saveWeekend(weekend);
+        final WeekendDTO savedWeekend = weekendService.saveWeekend(weekend);
         return ResponseEntity.ok(savedWeekend);
     }
 

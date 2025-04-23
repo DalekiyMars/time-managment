@@ -2,7 +2,6 @@ package com.time.managment.controller;
 
 import com.time.managment.entity.SecurityUser;
 import com.time.managment.entity.UserDepartment;
-import com.time.managment.exceptions.SomethingWentWrong;
 import com.time.managment.service.UserDepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,60 +10,66 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/user-departments")
 @RequiredArgsConstructor
 public class UserDepartmentController {
     private final UserDepartmentService userDepartmentService;
+
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{timesheet}")
-    public String getDepartmentsForUser(@PathVariable Integer timesheet, Model model) {
-        // Получаем все департаменты для пользователя с данным timesheet
-        SecurityUser user = new SecurityUser();
-        user.setTimesheet(timesheet);
-
-        List<UserDepartment> departments = userDepartmentService.getDepartmentsForUser(user);
-
-        model.addAttribute("departments", departments);
-        model.addAttribute("timesheet", timesheet);
-
+    @GetMapping("/manage")
+    public String showForm(@RequestParam(value = "timesheet", required = false) Integer timesheet, Model model) {
+        if (Objects.nonNull(timesheet)) {
+            final var user = new SecurityUser().setTimesheet(timesheet);
+            final List<UserDepartment> departments = userDepartmentService.getDepartmentsForUser(user);
+            model.addAttribute("departments", departments);
+            model.addAttribute("timesheet", timesheet);
+        }
         return "add-user-department";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    // Добавление департамента пользователю
-    @PostMapping("/{timesheet}")
-    public String addDepartmentToUser(@PathVariable Integer timesheet,
-                                      @RequestParam Integer departmentNumber) {
-        // Создаем объект пользователя с указанным timesheet
-        SecurityUser user = new SecurityUser();
-        user.setTimesheet(timesheet);
-
+    @PostMapping("/add")
+    public String addDepartmentToUser(@RequestParam Integer timesheet,
+                                      @RequestParam Integer departmentNumber,
+                                      Model model) {
+        final var user = new SecurityUser().setTimesheet(timesheet);
         try {
             userDepartmentService.addDepartmentToUser(user, departmentNumber);
-        } catch (Exception e)
-        {
-            throw new SomethingWentWrong("Что-то пошло не так, перепроверьте введенные данные");
+            model.addAttribute("message", "Департамент успешно добавлен!");
+            model.addAttribute("success", true);
+        } catch (Exception e) {
+            model.addAttribute("message", "Ошибка добавления департамента: " + e.getMessage());
+            model.addAttribute("success", false);
         }
-        // Добавляем департамент пользователю
 
-        // Перенаправляем на страницу с департаментами
-        return "redirect:/user-departments/" + timesheet;
+        // Обновляем список департаментов
+        final List<UserDepartment> departments = userDepartmentService.getDepartmentsForUser(user);
+        model.addAttribute("departments", departments);
+        model.addAttribute("timesheet", timesheet);
+        return "add-user-department";
     }
 
-    // Удаление департамента у пользователя
-    @PostMapping("/{timesheet}/{departmentNumber}")
-    public String removeDepartmentFromUser(@PathVariable Integer timesheet,
-                                           @PathVariable Integer departmentNumber) {
-        // Создаем объект пользователя с указанным timesheet
-        SecurityUser user = new SecurityUser();
-        user.setTimesheet(timesheet);
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/delete")
+    public String removeDepartmentFromUser(@RequestParam Integer timesheet,
+                                           @RequestParam Integer departmentNumber,
+                                           Model model) {
+        SecurityUser user = new SecurityUser().setTimesheet(timesheet);
+        try {
+            userDepartmentService.removeDepartmentFromUser(user, departmentNumber);
+            model.addAttribute("message", "Департамент успешно удалён.");
+            model.addAttribute("success", true);
+        } catch (Exception e) {
+            model.addAttribute("message", "Ошибка удаления департамента: " + e.getMessage());
+            model.addAttribute("success", false);
+        }
 
-        // Удаляем департамент
-        userDepartmentService.removeDepartmentFromUser(user, departmentNumber);
-
-        // Перенаправляем на страницу с департаментами
-        return "redirect:/user-departments/" + timesheet;
+        final List<UserDepartment> departments = userDepartmentService.getDepartmentsForUser(user);
+        model.addAttribute("departments", departments);
+        model.addAttribute("timesheet", timesheet);
+        return "add-user-department";
     }
 }

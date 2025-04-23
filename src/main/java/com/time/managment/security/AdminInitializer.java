@@ -31,11 +31,11 @@ public class AdminInitializer implements CommandLineRunner {
                 adminProperties.getFullUserInitials());
         
         if (securityUserRepository.findByUsername(adminProperties.getUsername()).isEmpty()) {
-            User user = new User()
+            final var user = new User()
                             .setUsername(adminProperties.getFullUserInitials())
                             .setTimeSheet(adminProperties.getTimesheet());
 
-            SecurityUser admin = new SecurityUser()
+            final var admin = new SecurityUser()
                     .setUsername(adminProperties.getUsername())
                     .setPassword(passwordEncoder.encode(adminProperties.getPassword()))
                     .setTimesheet(adminProperties.getTimesheet())

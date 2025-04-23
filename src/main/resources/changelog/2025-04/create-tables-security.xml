@@ -7,6 +7,11 @@
 
 
     <changeSet id="0-0-5" author="Eugene">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="sec_users"/>
+            </not>
+        </preConditions>
         <createTable tableName="sec_users">
             <column name="id" type="SERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -44,6 +49,11 @@
 
     <!-- Добавление таблицы для департаментов -->
     <changeSet id="0-0-6" author="Eugene">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="user_departments"/>
+            </not>
+        </preConditions>
         <createTable tableName="user_departments">
             <column name="id" type="SERIAL">
                 <constraints nullable="false"/>

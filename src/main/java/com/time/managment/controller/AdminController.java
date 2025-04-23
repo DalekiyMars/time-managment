@@ -30,7 +30,7 @@ public class AdminController {
     // Отображение формы изменения роли для выбранного пользователя
     @GetMapping("/changeRole/{id}")
     public String showChangeRoleForm(@PathVariable Integer id, Model model) {
-        Optional<SecurityUser> optUser = userRepository.findById(id);
+        final Optional<SecurityUser> optUser = userRepository.findById(id);
         if (optUser.isEmpty()) {
             model.addAttribute("error", "Пользователь не найден");
             return "redirect:/admin/users";
@@ -45,13 +45,13 @@ public class AdminController {
     // Обработка изменения роли
     @PostMapping("/changeRole")
     public String changeUserRole(@RequestParam Integer id, @RequestParam Role role, Model model) {
-        Optional<SecurityUser> optUser = userRepository.findById(id);
+        final Optional<SecurityUser> optUser = userRepository.findById(id);
         if (optUser.isEmpty()) {
             model.addAttribute("error", "Пользователь не найден");
             return "redirect:/admin/users";
         }
-        SecurityUser user = optUser.get();
-        user.setRoles(new HashSet<>(Set.of(role)));
+        final SecurityUser user = optUser.get()
+                .setRoles(new HashSet<>(Set.of(role)));
         userRepository.save(user);
         return "redirect:/admin/users";
     }

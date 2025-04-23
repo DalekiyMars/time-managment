@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,17 +24,18 @@ public class UserDepartmentService {
 
     // Добавление департамента пользователю
     public void addDepartmentToUser(SecurityUser user, Integer departmentNumber) {
-        if (userDepartmentRepository.existsByUser_TimesheetAndDepartmentNumber(user.getTimesheet(), departmentNumber))
+        if (userDepartmentRepository.existsByUser_TimesheetAndDepartmentNumber(user.getTimesheet(), departmentNumber)) {
             throw new SomethingWentWrong("У пользователя уже есть этот отдел!");
+        }
         // Убедимся, что у пользователя правильно установлен timesheet
-        if (user.getTimesheet() == null) {
+        if (Objects.isNull(user.getTimesheet())) {
             throw new IllegalArgumentException("User timesheet cannot be null.");
         }
 
         // Создаем объект UserDepartment с правильным timesheet
-        UserDepartment userDepartment = new UserDepartment();
-        userDepartment.setUser(securityUserRepository.findByTimesheet(user.getTimesheet()));  // указываем пользователя
-        userDepartment.setDepartmentNumber(departmentNumber); // указываем номер департамента
+        final UserDepartment userDepartment = new UserDepartment()
+                .setUser(securityUserRepository.findByTimesheet(user.getTimesheet()))
+                .setDepartmentNumber(departmentNumber);
 
         // Сохраняем департамент
         userDepartmentRepository.save(userDepartment);
@@ -46,7 +48,8 @@ public class UserDepartmentService {
                 .findByUser(user)
                 .stream()
                 .filter(department -> department.getDepartmentNumber().equals(departmentNumber))
-                .findFirst().ifPresent(userDepartmentRepository::delete);
+                .findFirst()
+                .ifPresent(userDepartmentRepository::delete);
 
     }
 }

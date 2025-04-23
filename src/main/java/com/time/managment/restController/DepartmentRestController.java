@@ -25,7 +25,7 @@ public class DepartmentRestController {
             @RequestParam Integer timesheet,
             @RequestParam Integer departmentNumber
     ) {
-        DepartmentDTO created = departmentService.saveDepartment(timesheet, departmentNumber);
+        final DepartmentDTO created = departmentService.saveDepartment(timesheet, departmentNumber);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

@@ -19,11 +19,11 @@ public class RecordsService {
     private final WeekendRepository weekendRepository;
 
     public List<CombinedRecordDTO> getCombinedRecords(Integer userId, LocalDate periodStart, LocalDate periodEnd) {
-        LocalDateTime presenceStart = periodStart.atStartOfDay();
-        LocalDateTime presenceEnd = periodEnd.plusDays(1).atStartOfDay();
+        final LocalDateTime presenceStart = periodStart.atStartOfDay();
+        final LocalDateTime presenceEnd = periodEnd.plusDays(1).atStartOfDay();
 
-        List<Presence> presences = presenceRepository.findByUserIdAndTimeMarkInRange(userId, presenceStart, presenceEnd);
-        List<Weekend> weekends = weekendRepository.findByUserTimeSheetAndWeekendDateBetween(userId, periodStart, periodEnd);
+        final List<Presence> presences = presenceRepository.findByUserIdAndTimeMarkInRange(userId, presenceStart, presenceEnd);
+        final List<Weekend> weekends = weekendRepository.findByUserTimeSheetAndWeekendDateBetween(userId, periodStart, periodEnd);
 
         List<CombinedRecordDTO> combined = new ArrayList<>();
 
@@ -47,25 +47,23 @@ public class RecordsService {
     }
 
     private static CombinedRecordDTO getCombinedRecordDTO(Presence p) {
-        CombinedRecordDTO dto = new CombinedRecordDTO();
-        dto.setType("presence");
-        dto.setUserId(p.getUserTimeSheet().getTimeSheet());
-        // Устанавливаем дату и время для Presence
-        LocalDateTime timeMark = p.getTimeMark();
-        dto.setDate(timeMark.toLocalDate()); // Дата присутствия
-        dto.setStartTime(timeMark.toLocalTime()); // Время начала присутствия
-        dto.setEndTime(timeMark.toLocalTime()); // Время окончания присутствия (равно времени начала)
-        dto.setReason(null); // Для присутствия причина не используется
-        return dto;
+        final LocalDateTime timeMark = p.getTimeMark();
+
+        return new CombinedRecordDTO()
+                .setType("presence")
+                .setTimeSheet(p.getUserTimeSheet().getTimeSheet())
+                // Устанавливаем дату и время для Presence
+                .setDate(timeMark.toLocalDate())
+                .setStartTime(timeMark.toLocalTime())
+                .setEndTime(timeMark.toLocalTime())
+                .setReason(null);
     }
 
-    private static CombinedRecordDTO getCombinedRecordDTO(Weekend w) {
-        CombinedRecordDTO dto = new CombinedRecordDTO();
-        dto.setType("weekend");
-        dto.setUserId(w.getUserTimeSheet());
 
-        // Устанавливаем дату
-        dto.setDate(w.getWeekendDate()); // Устанавливаем только дату выходного
+    private static CombinedRecordDTO getCombinedRecordDTO(Weekend w) {
+        CombinedRecordDTO dto = new CombinedRecordDTO()
+                .setType("weekend")
+                .setTimeSheet(w.getUserTimeSheet());
 
         // Проверяем, если выходной на весь день (startTime и endTime равны null)
         if (Objects.isNull(w.getStartTime()) && Objects.isNull(w.getEndTime())) {

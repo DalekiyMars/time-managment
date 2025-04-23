@@ -1,12 +1,14 @@
 package com.time.managment.dto;
 
 import com.time.managment.entity.SecurityUser;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
 
     private final SecurityUser user;
