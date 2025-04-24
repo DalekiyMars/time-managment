@@ -62,7 +62,7 @@ public class AccessService {
         return currentUser != null && currentUser.getUser().getTimesheet() != null && currentUser.getUser().getTimesheet().equals(timeSheet);
     }
 
-    private CustomUserDetails getCurrentUser() {
+    public CustomUserDetails getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof CustomUserDetails) {
             return (CustomUserDetails) principal;

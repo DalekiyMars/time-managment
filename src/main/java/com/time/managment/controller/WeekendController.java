@@ -2,10 +2,12 @@ package com.time.managment.controller;
 
 import com.time.managment.constants.AbsenceReason;
 import com.time.managment.constants.Constants;
+import com.time.managment.dto.CustomUserDetails;
 import com.time.managment.dto.HandlerDto;
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
 import com.time.managment.entity.Weekend;
+import com.time.managment.service.AccessService;
 import com.time.managment.service.WeekendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,18 +20,39 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/weekends")
 @RequiredArgsConstructor
 public class WeekendController {
     private final WeekendService weekendService;
+    private final AccessService accessService;
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
     @GetMapping("/search")
     public String searchWeekends(@RequestParam(value = "timeSheet", required = false) Integer timeSheet,
                                  Model model) {
-        if (timeSheet != null) {
+        CustomUserDetails currentUser = accessService.getCurrentUser(); // Получаем текущего пользователя
+
+        // Если роль пользователя - USER
+        if (Objects.nonNull(currentUser) && currentUser.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"))) {
+
+            // Если timeSheet не передан или передан другой, подставляем свой
+            if (Objects.nonNull(timeSheet) && !accessService.isSelf(timeSheet)) {
+                //model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Вы не можете просматривать данные другого сотрудника.");
+                return "access-denied"; // Отказ в доступе
+            }
+
+            // Если timeSheet не передан, подставляем свой собственный
+            if (Objects.isNull(timeSheet)) {
+                timeSheet = currentUser.getUser().getTimesheet();
+            }
+        }
+
+        // Если timeSheet передан, пытаемся получить данные
+        if (Objects.nonNull(timeSheet)) {
             try {
                 final List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
                 model.addAttribute(Constants.ModelValues.WEEKENDS, weekends);
@@ -37,6 +60,7 @@ public class WeekendController {
                 model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Сотрудник с таким табельным номером не найден.");
             }
         }
+
         return "weekends-list";
     }
 
