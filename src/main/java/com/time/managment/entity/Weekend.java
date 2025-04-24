@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +16,7 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "weekends")
 @NoArgsConstructor
+@Accessors(chain = true)
 public class Weekend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

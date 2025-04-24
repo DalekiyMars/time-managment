@@ -31,6 +31,7 @@ public class DepartmentController {
         return "departments-search";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/add")
     public String showForm() {
         return "department-add";
@@ -51,6 +52,7 @@ public class DepartmentController {
         model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/delete-form")
     public String showDeleteForm() {
         return "department-delete";
