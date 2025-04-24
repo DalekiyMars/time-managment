@@ -1,5 +1,6 @@
 package com.time.managment.service;
 
+import com.time.managment.constants.AbsenceReason;
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
 import com.time.managment.entity.Weekend;
@@ -8,9 +9,13 @@ import com.time.managment.repository.WeekendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,21 +28,26 @@ public class WeekendService {
     public List<WeekendDTO> getWeekendsByTimesheet(Integer timesheet) {
         return weekendRepository.findByUserTimeSheet(timesheet).stream()
                 .map(weekendMapper::toWeekendDTO)
+                .sorted(Comparator.comparing(WeekendDTO::getWeekendDate).reversed())
                 .collect(Collectors.toList());
     }
 
-    public WeekendDTO saveWeekend(WeekendDTO weekendDTO) {
-        Weekend weekend = weekendMapper.toWeekend(weekendDTO);
-
-        Weekend savedWeekend = weekendRepository.save(weekend);
+    public WeekendDTO saveWeekend(Weekend weekend) {
+        final Weekend savedWeekend = weekendRepository.save(weekend);
         return weekendMapper.toWeekendDTO(savedWeekend);
     }
 
-    public void deleteWeekend(WeekendToDelete weekend) {
-        weekendRepository.deleteByUserTimeSheetAndWeekendDate(weekend.getTimeSheet(), weekend.getWeekendDate());
+    @Transactional
+    public void deleteWeekend(WeekendToDelete dto) {
+        final Weekend weekend = weekendRepository.findByUserTimeSheetAndWeekendDate(dto.getTimeSheet(), dto.getWeekendDate())
+                .orElseThrow(() -> new NoSuchElementException("Такой выходной не найден."));
+        weekendRepository.delete(weekend);
     }
 
-    public List<Weekend> getWeekendsByUserTimeSheetAndDateRange(Integer userTimeSheet, LocalDate startDate, LocalDate endDate) {
-        return weekendRepository.findByUserTimeSheetAndWeekendDateBetween(userTimeSheet, startDate, endDate);
+    public boolean existsByFields(Integer userTimeSheet, LocalDate weekendDate,
+                                  LocalTime startTime, LocalTime endTime, AbsenceReason reason) {
+        return weekendRepository.existsByUserTimeSheetAndWeekendDateAndStartTimeAndEndTimeAndReason(
+                userTimeSheet, weekendDate, startTime, endTime, reason
+        );
     }
 }

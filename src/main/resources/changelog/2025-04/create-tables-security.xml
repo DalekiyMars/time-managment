@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+
+    <changeSet id="0-0-5" author="Eugene">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="sec_users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="sec_users">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timesheet" type="INT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint
+                tableName="sec_users"
+                columnNames="timesheet"
+                constraintName="uq_sec_users_timesheet" />
+        <createTable tableName="sec_user_roles">
+            <column name="user_timesheet" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="sec_user_roles"
+                baseColumnNames="user_timesheet"
+                referencedTableName="sec_users"
+                referencedColumnNames="timesheet"
+                constraintName="fk_sec_user_timesheet"/>
+    </changeSet>
+
+    <!-- Добавление таблицы для департаментов -->
+    <changeSet id="0-0-6" author="Eugene">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="user_departments"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_departments">
+            <column name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_timesheet" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department_number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_departments"
+                baseColumnNames="user_timesheet"
+                referencedTableName="sec_users"
+                referencedColumnNames="timesheet"
+                constraintName="fk_user_departments_user_timesheet"/>
+    </changeSet>
+</databaseChangeLog>

@@ -5,6 +5,7 @@ import com.time.managment.exceptions.SomethingWentWrong;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.time.format.DateTimeParseException;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class WeekendToDelete {
     @NotNull
     private Integer timeSheet;

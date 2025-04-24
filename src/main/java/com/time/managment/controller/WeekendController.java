@@ -1,38 +1,103 @@
 package com.time.managment.controller;
 
+import com.time.managment.constants.AbsenceReason;
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
+import com.time.managment.entity.Weekend;
 import com.time.managment.service.WeekendService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-@RestController
+@Controller
 @RequestMapping("/weekends")
 @RequiredArgsConstructor
 public class WeekendController {
     private final WeekendService weekendService;
 
-    // Получить список выходных по timesheet
-    @GetMapping("/{timeSheet}")
-    public ResponseEntity<List<WeekendDTO>> getWeekends(@PathVariable Integer timeSheet) {
-        List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
-        return ResponseEntity.ok(weekends);
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
+    @GetMapping("/search")
+    public String searchWeekends(@RequestParam(value = "timeSheet", required = false) Integer timeSheet,
+                                 Model model) {
+        if (timeSheet != null) {
+            try {
+                final List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
+                model.addAttribute("weekends", weekends);
+            } catch (NoSuchElementException e) {
+                model.addAttribute("errorMessage", "Сотрудник с таким табельным номером не найден.");
+            }
+        }
+        return "weekends-list";
     }
 
-    // Сохранить выходной день
-    @PostMapping("/add")
-    public ResponseEntity<WeekendDTO> addWeekend(@RequestBody WeekendDTO weekendDTO) {
-        WeekendDTO savedWeekend = weekendService.saveWeekend(weekendDTO);
-        return ResponseEntity.ok(savedWeekend);
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/add-form")
+    public String showAddWeekendForm() {
+        return "weekend-add";
     }
 
-    // Удалить выходной день
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteWeekend(@RequestBody WeekendToDelete weekend) {
-        weekendService.deleteWeekend(weekend);
-        return ResponseEntity.ok("Weekend deleted successfully");
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
+    @PostMapping("/add-form")
+    public String saveWeekend(@RequestParam Integer userTimeSheet,
+                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,
+                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
+                              @RequestParam String reason,
+                              Model model) {
+        try {
+            final var parsedReason = AbsenceReason.fromString(reason);
+
+            // Проверка на наличие такой же записи
+            final boolean exists = weekendService.existsByFields(userTimeSheet, weekendDate, startTime, endTime, parsedReason);
+
+            if (exists) {
+                model.addAttribute("message", "Ошибка: такая запись уже существует.");
+                model.addAttribute("success", false);
+            } else {
+                weekendService.saveWeekend(new Weekend(userTimeSheet, parsedReason, weekendDate, startTime, endTime));
+                model.addAttribute("message", "Выходной успешно добавлен.");
+                model.addAttribute("success", true);
+            }
+        } catch (NoSuchElementException e) {
+            model.addAttribute("message", "Сотрудник с таким табельным номером не найден.");
+            model.addAttribute("success", false);
+        } catch (Exception e) {
+            model.addAttribute("message", "Ошибка сохранения. Проверьте данные и повторите попытку.");
+            model.addAttribute("success", false);
+        }
+
+        return "weekend-add";
+    }
+
+
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/delete-form")
+    public String showDeleteWeekendForm() {
+        return "weekend-delete";
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
+    @PostMapping("/delete")
+    public String deleteWeekend(@RequestParam Integer timeSheet,
+                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,
+                                Model model) {
+        try {
+            final var toDelete = new WeekendToDelete(timeSheet, String.valueOf(weekendDate));
+            weekendService.deleteWeekend(toDelete);
+            model.addAttribute("message", "Выходной успешно удалён.");
+            model.addAttribute("success", true);
+        } catch (Exception e) {
+            model.addAttribute("message", "Ошибка при удалении: " + e.getMessage());
+            model.addAttribute("success", false);
+        }
+        return "weekend-delete";
     }
 }

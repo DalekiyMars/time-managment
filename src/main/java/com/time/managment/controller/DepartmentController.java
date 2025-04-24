@@ -1,30 +1,78 @@
 package com.time.managment.controller;
 
-import com.time.managment.dto.DepartmentCreateRequest;
 import com.time.managment.dto.DepartmentDTO;
-import com.time.managment.entity.Department;
+import com.time.managment.exceptions.SomethingWentWrong;
 import com.time.managment.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Objects;
 
-@RestController
-@RequestMapping("/department")
 @RequiredArgsConstructor
+@Controller
+@RequestMapping("/departments")
 public class DepartmentController {
     private final DepartmentService departmentService;
-
-    @GetMapping("/{timeSheet}")
-    public List<DepartmentDTO> getUser(@PathVariable("timeSheet") Integer timeSheet) {
-        return departmentService.getDepartment(timeSheet);
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
+    @GetMapping("/get")
+    public String showForm(Model model, @RequestParam(value = "timesheet", required = false) Integer timesheet) {
+        if (Objects.nonNull(timesheet)) {
+            final List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
+            model.addAttribute("departments", departments);
+        }
+        return "departments-search";
     }
 
-    @PostMapping("/save-to/")
-    public ResponseEntity<Department> saveDepartment(@RequestBody DepartmentCreateRequest request) {
-        Department created = departmentService.saveDepartment(request.getTimeSheet(), request.getDepartmentNumber());
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    @GetMapping("/add")
+    public String showForm() {
+        return "department-add";
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
+    @PostMapping("/save-to")
+    public String saveDepartmentViaForm(@RequestParam Integer timeSheet,
+                                        @RequestParam Integer departmentNumber,
+                                        Model model) {
+        try {
+            final DepartmentDTO created = departmentService.saveDepartment(timeSheet, departmentNumber);
+            model.addAttribute("message", "Успешно сохранено: " + created.getUser().getUsername()
+                    + " (" + created.getUser().getTimeSheet() + "), отдел: " + created.getDepartment());
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("message", "Ошибка: " + ex.getMessage());
+            model.addAttribute("success", false);
+            throw new SomethingWentWrong("Ошибка сохранения").setModelName("department-add");
+        }
+        return "department-add";
+    }
+
+    @GetMapping("/delete-form")
+    public String showDeleteForm() {
+        return "department-delete";
+    }
+
+    //FIXME не удаляется
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
+    @PostMapping("/delete-form")
+    public String deleteDepartment(@RequestParam Integer timeSheet,
+                                   @RequestParam Integer departmentNumber,
+                                   Model model) {
+        try {
+            departmentService.deleteByTimesheetAndDepartment(timeSheet, departmentNumber);
+            model.addAttribute("message", "Успешно удалено: табельный номер " + timeSheet + ", отдел " + departmentNumber);
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("message", "Ошибка при удалении: " + ex.getMessage());
+            model.addAttribute("success", false);
+            throw new SomethingWentWrong("Удаление не прошло").setModelName("department-delete");
+        }
+        return "department-delete";
     }
 }

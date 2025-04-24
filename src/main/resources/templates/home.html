@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f5;  /* светло‑серый фон страницы */
+            padding: 40px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;      /* белый фон обёртки */
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section {
+            background-color: #fff;     /* БЕЛЫЙ фон секции */
+            border: 1px solid #ccc;     /* СЕРАЯ рамка */
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .btn-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 10px;
+        }
+        .btn-table td {
+            white-space: nowrap;
+        }
+        .btn {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            font-size: 15px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Добро пожаловать!</h1>
+
+    <!-- ВЫХОДНЫЕ -->
+    <div class="section">
+        <h2>Выходные</h2>
+        <table class="btn-table">
+            <tr>
+                <td><a class="btn" th:href="@{/weekends/search}">Посмотреть выходные</a></td>
+                <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+                    <a class="btn" th:href="@{/weekends/add-form}">Добавить выходной</a>
+                </td>
+                <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+                    <a class="btn" th:href="@{/weekends/delete-form}">Удалить выходной</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ПОСЕЩАЕМОСТЬ -->
+    <div class="section">
+        <h2>Посещаемость</h2>
+        <table class="btn-table">
+            <tr>
+                <td><a class="btn" th:href="@{/presences/search}">Поиск по посещаемости</a></td>
+                <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+                    <a class="btn" th:href="@{/presences/add-form}">Добавить посещение</a>
+                </td>
+                <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+                    <a class="btn" th:href="@{/presences/all}">Список всех посещений</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ОТЧЁТЫ -->
+    <div class="section">
+        <h2>Отчёты</h2>
+        <table class="btn-table">
+            <tr>
+                <td><a class="btn" th:href="@{/records/form}">Просмотр отчета</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ПОЛЬЗОВАТЕЛИ -->
+    <div class="section" sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+        <h2>Пользователи</h2>
+        <table class="btn-table">
+            <tr>
+                <td><a class="btn" th:href="@{/users/form}">Действия с пользователями</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ОТДЕЛЫ -->
+    <div class="section">
+        <h2>Отделы</h2>
+        <table class="btn-table">
+            <tr>
+                <td sec:authorize="hasAnyRole('MANAGER','USER','ADMIN')">
+                    <a class="btn" th:href="@{/departments/get}">Посмотреть отделы</a>
+                </td>
+                <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+                    <a class="btn" th:href="@{/departments/add}">Добавить отдел</a>
+                </td>
+                <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+                    <a class="btn" th:href="@{/departments/delete-form}">Удалить отдел</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ДЕПАРТАМЕНТЫ ПОЛЬЗОВАТЕЛЯ -->
+    <div class="section" sec:authorize="hasRole('ADMIN')">
+        <h2>Доступ к отделам</h2>
+        <table class="btn-table">
+            <tr>
+                <td>
+                    <a class="btn" th:href="@{/user-departments/manage}">Перейти к выбору пользователя</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

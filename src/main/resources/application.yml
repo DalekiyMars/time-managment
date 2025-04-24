@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: management
+
+
+  liquibase:
+    change-log: changelog/root-changelog.xml
+
+  datasource:
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 20
+
+  profiles:
+    active: local

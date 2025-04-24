@@ -1,4 +1,4 @@
-package com.time.managment.controller;
+package com.time.managment.restController;
 
 import com.time.managment.constants.ExceptionCodes;
 import com.time.managment.dto.ErrorResponse;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
-public class ExceptionHandleController {
+public class ExceptionHandleRestController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()

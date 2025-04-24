@@ -10,6 +10,16 @@ public class Constants {
         public static final String SOMETHING_WENT_WRONG = "Something went wrong";
         public static final String ELEM_NOT_FOUND = "Element Not Found";
         public static final String  FIELD_EXCEPTION= "Entity loss necessary field/s";
-        public static final String SAVING_EXCEPTION = "Saving exception";
+        public static final String TIMESHEET_ALREADY_EXISTS = "Пользователь с таким табельным номером уже существует";
+    }
+    public static class ClassicMessages{
+        public static final String INFO_DELETED_SUCCESSFULLY = "Информация о выходном удалена.";
+    }
+    public static class PasswordValues{
+        public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        public static final String LOWER = UPPER.toLowerCase();
+        public static final String DIGITS = "0123456789";
+        public static final String ALL = UPPER + LOWER + DIGITS;
+        public static final int DEFAULT_LENGTH = 9;
     }
 }

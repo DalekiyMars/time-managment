@@ -15,7 +15,7 @@
             <column name="id" type="BIGSERIAL" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="initials" type="VARCHAR(200)">
+            <column name="initials" type="VARCHAR(200)" encoding="UTF8">
                 <constraints nullable="false"/>
             </column>
             <column name="timesheet" type="INTEGER">

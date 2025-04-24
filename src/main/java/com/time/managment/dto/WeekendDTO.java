@@ -2,6 +2,7 @@ package com.time.managment.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.time.managment.constants.AbsenceReason;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -18,7 +19,7 @@ public class WeekendDTO {
     @NotNull
     private Integer userTimeSheet;
     @NotBlank
-    private String reason;
+    private AbsenceReason reason;
     @NotNull
     private LocalDate weekendDate;
     private LocalTime startTime;
@@ -34,7 +35,12 @@ public class WeekendDTO {
         this.userTimeSheet = userTimesheet;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.reason = reason;
+        this.reason = AbsenceReason.fromString(reason);
         this.weekendDate = weekendDate;
     }
+
+    public String getReasonDisplay() {
+        return reason != null ? reason.getDisplayName() : "";
+    }
+
 }

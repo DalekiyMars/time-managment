@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Поиск записей</title>
+    <title>Проверка отметок</title>
     <style>
         body {
             background-color: #89CFF0;
@@ -83,8 +83,8 @@
                 <option value="year" th:selected="${periodDisplay == 'Last Year'}">Последний год</option>
             </select>
 
-            <label for="userId">ID пользователя:</label>
-            <input type="number" id="userId" name="userId" placeholder="Введите ID пользователя" th:value="${userId}">
+            <label for="timeSheet">Табельный номер пользователя:</label>
+            <input type="number" id="timeSheet" name="timeSheet" placeholder="Введите табельный номер пользователя" th:value="${timeSheet}">
 
             <button type="submit">Поиск</button>
         </div>
@@ -97,11 +97,11 @@
     </div>
     <div class="record-box" th:if="${#lists.isEmpty(records)}">
         <p>Записи не найдены.</p>
-        <p>ID пользователя: <span th:text="${userId}">N/A</span></p>
+        <p>ID пользователя: <span th:text="${timeSheet}">N/A</span></p>
     </div>
 
     <div class="record-box" th:each="record : ${records}">
-        <p>ID пользователя: <span th:text="${record.userId}"></span></p>
+        <p>ID пользователя: <span th:text="${record.timeSheet}"></span></p>
         <p>Дата: <span th:text="${#temporals.format(record.date, 'dd.MM.yyyy')}"></span></p>
         <p>
             Тип:
