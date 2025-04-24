@@ -22,4 +22,13 @@ public class CombinedRecordDTO {
     public String getReason() {
         return reason != null ? reason.getDisplayName() : "-";
     }
+
+    public String getReadableType() {
+        // логика, возвращающая читаемый тип, например:
+        return switch (type) {
+            case "presence" -> "Присутствие";
+            case "weekend" -> "Выходной";
+            default -> "Неизвестно";
+        };
+    }
 }

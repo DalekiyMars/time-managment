@@ -1,5 +1,6 @@
 package com.time.managment.controller;
 
+import com.time.managment.constants.Constants;
 import com.time.managment.constants.Role;
 import com.time.managment.entity.SecurityUser;
 import com.time.managment.repository.SecurityUserRepository;
@@ -35,7 +36,7 @@ public class AdminController {
             model.addAttribute("error", "Пользователь не найден");
             return "redirect:/admin/users";
         }
-        model.addAttribute("user", optUser.get());
+        model.addAttribute(Constants.ModelValues.USER, optUser.get());
         // Предоставляем список доступных ролей
         model.addAttribute("roles", Role.values());
         return "admin-change-role";

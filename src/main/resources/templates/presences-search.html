@@ -62,7 +62,7 @@
 <div class="container">
     <h1>Присутствия сотрудника</h1>
 
-    <form th:action="@{/presences/search}" method="get">
+    <form th:action="@{/presences/search}" method="post">
         <label for="timeSheet">Введите табельный номер:</label>
         <input type="number" id="timeSheet" name="timeSheet" required>
         <button type="submit">Найти</button>

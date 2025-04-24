@@ -32,10 +32,21 @@
         <label>
             <input type="number" name="timeSheet" required/>
         </label>
+
         <label>Новое имя пользователя:</label>
         <label>
             <input type="text" name="username" required/>
         </label>
+
+        <label>Новая роль:</label>
+        <label>
+            <select name="role" required>
+                <option value="ADMIN">ADMIN</option>
+                <option value="MANAGER">MANAGER</option>
+                <option value="USER">USER</option>
+            </select>
+        </label>
+
         <button type="submit">Обновить</button>
     </form>
     <div class="message" th:if="${message}" th:text="${message}"></div>

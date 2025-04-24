@@ -1,5 +1,6 @@
 package com.time.managment.service;
 
+import com.time.managment.dto.CustomUserDetails;
 import com.time.managment.entity.Department;
 import com.time.managment.entity.SecurityUser;
 import com.time.managment.entity.User;
@@ -57,13 +58,15 @@ public class AccessService {
     }
 
     public boolean isSelf(Integer timeSheet) {
-        SecurityUser currentUser = getCurrentUser();
-        return currentUser != null && currentUser.getTimesheet().equals(timeSheet);
+        CustomUserDetails currentUser = getCurrentUser();
+        return currentUser != null && currentUser.getUser().getTimesheet() != null && currentUser.getUser().getTimesheet().equals(timeSheet);
     }
 
-    private SecurityUser getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !(auth.getPrincipal() instanceof SecurityUser)) return null;
-        return (SecurityUser) auth.getPrincipal();
+    private CustomUserDetails getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomUserDetails) {
+            return (CustomUserDetails) principal;
+        }
+        return null;
     }
 }

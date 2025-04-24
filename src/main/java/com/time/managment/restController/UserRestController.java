@@ -29,14 +29,15 @@ public class UserRestController {
     }
 
     @PostMapping("/update/{timesheet}")
-    public UserDTO updateExistedUser(@PathVariable("timesheet") Integer timesheet, @RequestBody @Valid User user){
-        return userService.updateUser(timesheet, user);
+    public UserDTO updateExistedUser(@PathVariable("timesheet") Integer timesheet, @RequestParam String username,
+                                     @RequestParam String role){
+        return userService.updateUserForREST(timesheet, username, role);
     }
 
     @DeleteMapping("/{timeSheet}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer timeSheet) {
         try {
-            userService.deleteUser(timeSheet);
+            userService.deleteUserForREST(timeSheet);
             return ResponseEntity.ok("User deleted successfully");
         } catch (NoSuchElementException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

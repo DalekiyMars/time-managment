@@ -1,6 +1,7 @@
 package com.time.managment.controller;
 
-import com.time.managment.dto.UserDTO;
+import com.time.managment.constants.Constants;
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.entity.User;
 import com.time.managment.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/form")
     public String showUserForm(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute(Constants.ModelValues.USER, new User());
         return "user-form";
     }
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
@@ -37,10 +38,10 @@ public class UserController {
                     .setTimeSheet(timeSheet);
 
             final var saved = userService.saveUser(user);
-            model.addAttribute("message", "Пользователь добавлен: логин — " + saved.getUsername() +
+            model.addAttribute(Constants.ModelValues.MESSAGE, "Пользователь добавлен: логин — " + saved.getUsername() +
                     ", пароль — " + saved.getPassword());
         } catch (Exception e) {
-            model.addAttribute("message", "Ошибка при добавлении пользователя: " + e.getMessage());
+            model.addAttribute(Constants.ModelValues.MESSAGE, "Ошибка при добавлении пользователя: " + e.getMessage());
         }
         return "user-add";
     }
@@ -52,39 +53,43 @@ public class UserController {
             final var user = new User()
                     .setUsername(userDTO.getUsername())
                     .setTimeSheet(userDTO.getTimeSheet());
-            model.addAttribute("user", user);
+            model.addAttribute(Constants.ModelValues.USER, user);
             return "user-update";
         } catch (Exception e) {
-            model.addAttribute("message", "Пользователь не найден.");
+            model.addAttribute(Constants.ModelValues.MESSAGE, "Пользователь не найден.");
             return "redirect:/users/form";
         }
     }
-    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
-    @PostMapping("/update")
-    public String updateUser(@ModelAttribute User user, Model model) {
-        try {
-            final UserDTO updated = userService.updateUser(user.getTimeSheet(), user);
-            model.addAttribute("message", "Обновлено: " + updated.getUsername());
-            model.addAttribute("success", true);
-        } catch (Exception e) {
-            model.addAttribute("message", "Ошибка обновления: " + e.getMessage());
-            model.addAttribute("success", false);
-        }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/update-form")
+    public String showUpdateForm(){
         return "user-update";
     }
+
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
+    @PostMapping("/update")
+    public String updateUser(@RequestParam Integer timeSheet,
+                             @RequestParam String username,
+                             @RequestParam String role,
+                             Model model) {
+        setMessageAndSuccess(model, userService.updateUserForModel(timeSheet, username, role));
+
+        return "user-update";
+    }
+
+    private void setMessageAndSuccess(Model model, HandlerDto result){
+        model.addAttribute(Constants.ModelValues.MESSAGE, result.getMessage());
+        model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
+    }
+
     @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/delete")
     public String deleteUser(@RequestParam Integer timeSheet, Model model) {
-        try {
-            userService.deleteUser(timeSheet);
-            model.addAttribute("message", "Пользователь удалён.");
-            model.addAttribute("success", true);
-        } catch (Exception e) {
-            model.addAttribute("message", "Ошибка удаления: " + e.getMessage());
-            model.addAttribute("success", false);
-        }
+        setMessageAndSuccess(model,userService.deleteUserForModel(timeSheet));
         return "user-delete";
     }
+
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/delete-form")
     public String showDeleteForm() {
@@ -94,7 +99,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/all")
     public String getAllUsers(Model model) {
-        model.addAttribute("users", userService.getAll()); // предположим, есть такой метод
+        model.addAttribute("users", userService.getAll());
         return "user-list";
     }
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
@@ -107,9 +112,9 @@ public class UserController {
     public String searchUserByTimesheet(@RequestParam Integer timeSheet, Model model) {
         try {
             final var user = userService.getUserDTO(timeSheet);
-            model.addAttribute("user", user);
+            model.addAttribute(Constants.ModelValues.USER, user);
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Пользователь не найден.");
+            model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Пользователь не найден.");
         }
         return "user-search";
     }

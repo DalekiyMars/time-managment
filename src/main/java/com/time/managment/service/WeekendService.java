@@ -1,6 +1,7 @@
 package com.time.managment.service;
 
 import com.time.managment.constants.AbsenceReason;
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
 import com.time.managment.entity.Weekend;
@@ -32,16 +33,50 @@ public class WeekendService {
                 .collect(Collectors.toList());
     }
 
-    public WeekendDTO saveWeekend(Weekend weekend) {
+    public WeekendDTO saveWeekendForREST(Weekend weekend) {
         final Weekend savedWeekend = weekendRepository.save(weekend);
         return weekendMapper.toWeekendDTO(savedWeekend);
     }
 
+    public HandlerDto saveWeekendForView(Weekend weekend) {
+        try {
+            final Integer timeSheet = weekend.getUserTimeSheet();
+            final LocalDate date = weekend.getWeekendDate();
+            final LocalTime start = weekend.getStartTime();
+            final LocalTime end = weekend.getEndTime();
+            final AbsenceReason reason = weekend.getReason();
+
+            if (existsByFields(timeSheet, date, start, end, reason)) {
+                return new HandlerDto(false, "Ошибка: такая запись уже существует.");
+            }
+
+            Weekend saved = weekendRepository.save(weekend);
+            return new HandlerDto(true, "Выходной успешно добавлен: " + saved.getWeekendDate());
+        } catch (NoSuchElementException e) {
+            return new HandlerDto(false, "Сотрудник с таким табельным номером не найден.");
+        } catch (Exception e) {
+            return new HandlerDto(false, "Ошибка сохранения. Проверьте данные и повторите попытку.");
+        }
+    }
+
     @Transactional
-    public void deleteWeekend(WeekendToDelete dto) {
+    public void deleteWeekendForREST(WeekendToDelete dto) {
         final Weekend weekend = weekendRepository.findByUserTimeSheetAndWeekendDate(dto.getTimeSheet(), dto.getWeekendDate())
                 .orElseThrow(() -> new NoSuchElementException("Такой выходной не найден."));
         weekendRepository.delete(weekend);
+    }
+
+    public HandlerDto deleteWeekendForView(WeekendToDelete dto) {
+        try {
+            Weekend weekend = weekendRepository.findByUserTimeSheetAndWeekendDate(dto.getTimeSheet(), dto.getWeekendDate())
+                    .orElseThrow(() -> new NoSuchElementException("Такой выходной не найден."));
+            weekendRepository.delete(weekend);
+            return new HandlerDto(true, "Выходной успешно удалён: " + dto.getWeekendDate());
+        } catch (NoSuchElementException e) {
+            return new HandlerDto(false, "Ошибка: " + e.getMessage());
+        } catch (Exception e) {
+            return new HandlerDto(false, "Не удалось удалить выходной. Повторите попытку.");
+        }
     }
 
     public boolean existsByFields(Integer userTimeSheet, LocalDate weekendDate,

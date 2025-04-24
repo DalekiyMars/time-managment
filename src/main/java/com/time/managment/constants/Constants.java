@@ -22,4 +22,17 @@ public class Constants {
         public static final String ALL = UPPER + LOWER + DIGITS;
         public static final int DEFAULT_LENGTH = 9;
     }
+    public static class ModelValues{
+        public static final String MESSAGE = "message";
+        public static final String SUCCESS = "success";
+        public static final String WEEKENDS = "weekends";
+        public static final String ERROR_MESSAGE = "errorMessage";
+        public static final String DEPARTMENTS = "departments";
+        public static final String TIMESHEET = "timesheet";
+        public static final String USER = "user";
+        public static final String RECORDS = "records";
+        public static final String PERIOD_DISPLAY = "periodDisplay";
+        public static final String USER_ID = "userId";
+        public static final String PRESENCES = "presences";
+    }
 }

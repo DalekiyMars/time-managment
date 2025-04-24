@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>403 - Доступ запрещен</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            text-align: center;
+            padding: 50px;
+        }
+        .error-container {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        h1 {
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>403 - Доступ запрещен</h1>
+    <p>У вас нет прав для доступа к этому ресурсу.</p>
+    <a href="/" th:href="@{/}">Вернуться на главную</a>
+</div>
+</body>
+</html>

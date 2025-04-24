@@ -23,18 +23,16 @@ public class DepartmentRestController {
     @PostMapping("/save-to/")
     public ResponseEntity<DepartmentDTO> saveDepartment(
             @RequestParam Integer timesheet,
-            @RequestParam Integer departmentNumber
-    ) {
-        final DepartmentDTO created = departmentService.saveDepartment(timesheet, departmentNumber);
+            @RequestParam Integer departmentNumber) {
+        final DepartmentDTO created = departmentService.saveDepartmentREST(timesheet, departmentNumber);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @DeleteMapping("/by-timesheet-and-department")
     public ResponseEntity<Void> deleteDepartment(
             @RequestParam Integer timesheet,
-            @RequestParam Integer departmentNumber
-    ) {
-        departmentService.deleteByTimesheetAndDepartment(timesheet, departmentNumber);
+            @RequestParam Integer departmentNumber) {
+        departmentService.deleteByTimesheetAndDepartmentForREST(timesheet, departmentNumber);
         return ResponseEntity.ok().build();
     }
 }

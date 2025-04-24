@@ -1,6 +1,8 @@
 package com.time.managment.controller;
 
 import com.time.managment.constants.AbsenceReason;
+import com.time.managment.constants.Constants;
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.dto.WeekendDTO;
 import com.time.managment.dto.WeekendToDelete;
 import com.time.managment.entity.Weekend;
@@ -30,9 +32,9 @@ public class WeekendController {
         if (timeSheet != null) {
             try {
                 final List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
-                model.addAttribute("weekends", weekends);
+                model.addAttribute(Constants.ModelValues.WEEKENDS, weekends);
             } catch (NoSuchElementException e) {
-                model.addAttribute("errorMessage", "Сотрудник с таким табельным номером не найден.");
+                model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Сотрудник с таким табельным номером не найден.");
             }
         }
         return "weekends-list";
@@ -44,7 +46,7 @@ public class WeekendController {
         return "weekend-add";
     }
 
-    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#userTimeSheet))")
     @PostMapping("/add-form")
     public String saveWeekend(@RequestParam Integer userTimeSheet,
                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,
@@ -52,31 +54,18 @@ public class WeekendController {
                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
                               @RequestParam String reason,
                               Model model) {
-        try {
-            final var parsedReason = AbsenceReason.fromString(reason);
+        final var parsedReason = AbsenceReason.fromString(reason);
+        final var weekend = new Weekend(userTimeSheet, parsedReason, weekendDate, startTime, endTime);
 
-            // Проверка на наличие такой же записи
-            final boolean exists = weekendService.existsByFields(userTimeSheet, weekendDate, startTime, endTime, parsedReason);
-
-            if (exists) {
-                model.addAttribute("message", "Ошибка: такая запись уже существует.");
-                model.addAttribute("success", false);
-            } else {
-                weekendService.saveWeekend(new Weekend(userTimeSheet, parsedReason, weekendDate, startTime, endTime));
-                model.addAttribute("message", "Выходной успешно добавлен.");
-                model.addAttribute("success", true);
-            }
-        } catch (NoSuchElementException e) {
-            model.addAttribute("message", "Сотрудник с таким табельным номером не найден.");
-            model.addAttribute("success", false);
-        } catch (Exception e) {
-            model.addAttribute("message", "Ошибка сохранения. Проверьте данные и повторите попытку.");
-            model.addAttribute("success", false);
-        }
+        setModelAttributes(model, weekendService.saveWeekendForView(weekend));
 
         return "weekend-add";
     }
 
+    private void setModelAttributes(Model model, HandlerDto result){
+        model.addAttribute(Constants.ModelValues.MESSAGE, result.getMessage());
+        model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
+    }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @GetMapping("/delete-form")
@@ -89,15 +78,9 @@ public class WeekendController {
     public String deleteWeekend(@RequestParam Integer timeSheet,
                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekendDate,
                                 Model model) {
-        try {
-            final var toDelete = new WeekendToDelete(timeSheet, String.valueOf(weekendDate));
-            weekendService.deleteWeekend(toDelete);
-            model.addAttribute("message", "Выходной успешно удалён.");
-            model.addAttribute("success", true);
-        } catch (Exception e) {
-            model.addAttribute("message", "Ошибка при удалении: " + e.getMessage());
-            model.addAttribute("success", false);
-        }
+        final var toDelete = new WeekendToDelete(timeSheet, String.valueOf(weekendDate));
+        setModelAttributes(model, weekendService.deleteWeekendForView(toDelete));
+
         return "weekend-delete";
     }
 }

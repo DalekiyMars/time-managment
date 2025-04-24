@@ -27,14 +27,14 @@ public class WeekendRestController {
     // Сохранить выходной день
     @PostMapping("/add")
     public ResponseEntity<WeekendDTO> addWeekend(@RequestBody Weekend weekend) {
-        final WeekendDTO savedWeekend = weekendService.saveWeekend(weekend);
+        final WeekendDTO savedWeekend = weekendService.saveWeekendForREST(weekend);
         return ResponseEntity.ok(savedWeekend);
     }
 
     // Удалить выходной день
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteWeekend(@RequestBody WeekendToDelete weekend) {
-        weekendService.deleteWeekend(weekend);
+        weekendService.deleteWeekendForREST(weekend);
         return ResponseEntity.ok(Constants.ClassicMessages.INFO_DELETED_SUCCESSFULLY);
     }
 }

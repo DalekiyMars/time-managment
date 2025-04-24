@@ -37,7 +37,7 @@ public class UserDepartmentRestController {
         final var user = new SecurityUser()
                 .setTimesheet(timesheet);
 
-        userDepartmentService.removeDepartmentFromUser(user, departmentNumber);
+        userDepartmentService.removeDepartmentFromUserForREST(user, departmentNumber);
         return ResponseEntity.noContent().build();
     }
 }
