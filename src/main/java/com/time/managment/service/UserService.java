@@ -2,6 +2,7 @@ package com.time.managment.service;
 
 import com.time.managment.constants.Constants;
 import com.time.managment.constants.Role;
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.dto.UserDTO;
 import com.time.managment.entity.SecurityUser;
 import com.time.managment.entity.User;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,20 +68,63 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO updateUser(Integer timeSheet, User updatedUser) {
-        final User existingUser = userRepository.findByTimeSheet(timeSheet)
-                .orElseThrow(() -> new NoSuchElementException("User not found with timesheet: " + updatedUser.getTimeSheet()));
+    public UserDTO updateUserForREST(Integer timeSheet, String newUsername, String newRole) {
+        final var existingUser = updateUser(timeSheet, newUsername, newRole);
 
-        existingUser.setUsername(updatedUser.getUsername());
-        return userMapper.toUserDto(userRepository.save(existingUser));
+        return userMapper.toUserDto(existingUser);
+    }
+
+    public HandlerDto updateUserForModel(Integer timeSheet, String newUsername, String newRole) {
+        try {
+            updateUser(timeSheet,newUsername, newRole);
+
+            return new HandlerDto()
+                    .setSuccess(true)
+                    .setMessage("Обновлено: " + newUsername);
+
+        } catch (Exception e) {
+            return new HandlerDto()
+                    .setSuccess(false)
+                    .setMessage("Ошибка обновления: " + e.getMessage());
+        }
+    }
+
+    private User updateUser(Integer timeSheet, String newUsername, String newRole){
+        final User existingUser = userRepository.findByTimeSheet(timeSheet)
+                .orElseThrow(() -> new NoSuchElementException("User not found with timesheet: " + timeSheet));
+
+        existingUser.setUsername(newUsername);
+
+        final SecurityUser secUser = securityUserService.getSecUserByTimeSheet(timeSheet);
+        secUser.setRoles(new HashSet<>(List.of(Role.valueOf(newRole.toUpperCase()))));
+        secUser.setUser(existingUser);
+
+        existingUser.setSecurityUser(secUser);
+
+        securityUserService.save(secUser);
+        return userRepository.save(existingUser);
     }
 
     @Transactional
-    public void deleteUser(Integer timeSheet) {
+    public void deleteUserForREST(Integer timeSheet) {
         try {
             userRepository.deleteByTimeSheet(timeSheet);
         } catch (Exception ex){
             throw new NoSuchElementException(Constants.ExceptionDescriptions.NO_SUCH_ELEMENT);
+        }
+    }
+
+    @Transactional
+    public HandlerDto deleteUserForModel(Integer timeSheet) {
+        try {
+            userRepository.deleteByTimeSheet(timeSheet);
+            return new HandlerDto()
+                    .setSuccess(true)
+                    .setMessage("Пользователь удалён.");
+        } catch (Exception ex) {
+            return new HandlerDto()
+                    .setSuccess(false)
+                    .setMessage("Ошибка удаления: " + Constants.ExceptionDescriptions.NO_SUCH_ELEMENT);
         }
     }
 
@@ -90,21 +135,15 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Генерация логина на основе ФИО и табельного номера.
-     * Пример: ИвановИванИванович + 12345 → ivanov.12345
-     */
     private String generateUsername(String fullName, Integer timesheet) {
         // Находим все слова, начинающиеся с заглавной
-        final List<String> parts = Arrays.stream(fullName.split("(?=\\p{Lu})"))
+        final List<String> parts = Arrays.stream(fullName.trim().split("(?=\\p{Lu})"))
                 .filter(s -> !s.isBlank())
                 .toList();
 
-        if (parts.size() < 2) {
-            throw new SomethingWentWrong("Формат ФИО некорректный: " + fullName);
-        }
+        final String lastName = parts.get(0); // Фамилия с заглавной
+        final String name = parts.get(1);     // Имя с заглавной
 
-        String lastName = parts.get(0).toLowerCase(); // Фамилия
-        return lastName + "." + timesheet;
+        return lastName + timesheet + name;
     }
 }

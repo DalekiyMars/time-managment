@@ -1,5 +1,7 @@
 package com.time.managment.controller;
 
+import com.time.managment.constants.Constants;
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.dto.PresenceDTO;
 import com.time.managment.entity.Presence;
 import com.time.managment.service.PresenceService;
@@ -37,9 +39,9 @@ public class PresenceController {
     public String searchPresencePost(@RequestParam("timeSheet") Integer timeSheet, Model model) {
         try {
             final List<PresenceDTO> presences = presenceService.getPresences(timeSheet);
-            model.addAttribute("presences", presences);
+            model.addAttribute(Constants.ModelValues.PRESENCES, presences);
         } catch (NoSuchElementException e) {
-            model.addAttribute("errorMessage", "Сотрудник с таким табельным номером не найден.");
+            model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Сотрудник с таким табельным номером не найден.");
         }
 
         return "presences-search";
@@ -56,18 +58,15 @@ public class PresenceController {
     public String savePresence(@RequestParam Integer timeSheet,
                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeMark,
                                Model model) {
-        try {
-            final Presence presence = new Presence()
-                    .setTimeMark(timeMark)
-                    .setUserTimeSheet(userService.getUser(timeSheet));
+        final var presence = new Presence()
+                .setTimeMark(timeMark)
+                .setUserTimeSheet(userService.getUser(timeSheet));
 
-            final PresenceDTO saved = presenceService.savePresence(presence);
-            model.addAttribute("message", "Сохранено: " + saved.getUser().getUsername() + " — " + saved.getTimeMark());
-            model.addAttribute("success", true);
-        } catch (Exception ex) {
-            model.addAttribute("message", "Ошибка: " + ex.getMessage());
-            model.addAttribute("success", false);
-        }
+        HandlerDto result = presenceService.savePresenceForView(presence);
+
+        model.addAttribute(Constants.ModelValues.MESSAGE, result.getMessage());
+        model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
+
         return "presence-add";
     }
 
@@ -75,7 +74,7 @@ public class PresenceController {
     @GetMapping("/all")
     public String getAllPresences(Model model) {
         final List<Presence> presences = presenceService.getAllPresence();
-        model.addAttribute("presences", presences);
+        model.addAttribute(Constants.ModelValues.PRESENCES, presences);
         return "presences-list";
     }
 }

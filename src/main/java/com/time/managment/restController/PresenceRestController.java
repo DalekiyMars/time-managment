@@ -28,7 +28,7 @@ public class PresenceRestController {
     // Сохранить присутствие
     @PostMapping("/add")
     public ResponseEntity<PresenceDTO> savePresence(@RequestBody Presence presence) {
-        final PresenceDTO saved = presenceService.savePresence(presence);
+        final PresenceDTO saved = presenceService.savePresenceForREST(presence);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 

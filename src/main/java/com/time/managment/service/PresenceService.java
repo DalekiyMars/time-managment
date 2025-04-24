@@ -1,10 +1,10 @@
 package com.time.managment.service;
 
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.dto.PresenceDTO;
 import com.time.managment.entity.Presence;
 import com.time.managment.entity.User;
 import com.time.managment.mapper.PresenceMapper;
-import com.time.managment.repository.DepartmentRepository;
 import com.time.managment.repository.PresenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,8 +28,23 @@ public class PresenceService {
                 .collect(Collectors.toList());
     }
 
-    public PresenceDTO savePresence(Presence presence) {
+    public PresenceDTO savePresenceForREST(Presence presence) {
         return mapper.toPresenceDTO(repository.save(presence));
+    }
+
+    public HandlerDto savePresenceForView(Presence presence) {
+        try {
+            final PresenceDTO saved = mapper.toPresenceDTO(repository.save(presence));
+
+            return new HandlerDto()
+                    .setSuccess(true)
+                    .setMessage("Сохранено: " + saved.getUser().getUsername());
+
+        } catch (Exception ex) {
+            return new HandlerDto()
+                    .setSuccess(false)
+                    .setMessage("Ошибка: " + ex.getMessage());
+        }
     }
 
     public List<Presence> getAllPresence() {

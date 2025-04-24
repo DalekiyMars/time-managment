@@ -13,4 +13,8 @@ public class SecurityUserService {
     public void save(SecurityUser user){
         userRepository.save(user);
     }
+
+    public SecurityUser getSecUserByTimeSheet(Integer timeSheet){
+        return userRepository.findByTimesheet(timeSheet);
+    }
 }

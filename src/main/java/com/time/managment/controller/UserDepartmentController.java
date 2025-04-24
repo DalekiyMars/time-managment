@@ -1,5 +1,7 @@
 package com.time.managment.controller;
 
+import com.time.managment.constants.Constants;
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.entity.SecurityUser;
 import com.time.managment.entity.UserDepartment;
 import com.time.managment.service.UserDepartmentService;
@@ -24,8 +26,7 @@ public class UserDepartmentController {
         if (Objects.nonNull(timesheet)) {
             final var user = new SecurityUser().setTimesheet(timesheet);
             final List<UserDepartment> departments = userDepartmentService.getDepartmentsForUser(user);
-            model.addAttribute("departments", departments);
-            model.addAttribute("timesheet", timesheet);
+            setDepartmentsAndTimesheet(model, departments, timesheet);
         }
         return "add-user-department";
     }
@@ -36,20 +37,23 @@ public class UserDepartmentController {
                                       @RequestParam Integer departmentNumber,
                                       Model model) {
         final var user = new SecurityUser().setTimesheet(timesheet);
-        try {
-            userDepartmentService.addDepartmentToUser(user, departmentNumber);
-            model.addAttribute("message", "Департамент успешно добавлен!");
-            model.addAttribute("success", true);
-        } catch (Exception e) {
-            model.addAttribute("message", "Ошибка добавления департамента: " + e.getMessage());
-            model.addAttribute("success", false);
-        }
+        setMessageAndSuccessForModel(model, userDepartmentService.addDepartmentToUserForView(user, departmentNumber));
 
         // Обновляем список департаментов
         final List<UserDepartment> departments = userDepartmentService.getDepartmentsForUser(user);
-        model.addAttribute("departments", departments);
-        model.addAttribute("timesheet", timesheet);
+        setDepartmentsAndTimesheet(model, departments, timesheet);
+
         return "add-user-department";
+    }
+
+    private void setMessageAndSuccessForModel(Model model, HandlerDto result){
+        model.addAttribute(Constants.ModelValues.MESSAGE, result.getMessage());
+        model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
+    }
+
+    private void setDepartmentsAndTimesheet(Model model, List<UserDepartment> departments, Integer timesheet){
+        model.addAttribute(Constants.ModelValues.DEPARTMENTS, departments);
+        model.addAttribute(Constants.ModelValues.TIMESHEET, timesheet);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -57,19 +61,12 @@ public class UserDepartmentController {
     public String removeDepartmentFromUser(@RequestParam Integer timesheet,
                                            @RequestParam Integer departmentNumber,
                                            Model model) {
-        SecurityUser user = new SecurityUser().setTimesheet(timesheet);
-        try {
-            userDepartmentService.removeDepartmentFromUser(user, departmentNumber);
-            model.addAttribute("message", "Департамент успешно удалён.");
-            model.addAttribute("success", true);
-        } catch (Exception e) {
-            model.addAttribute("message", "Ошибка удаления департамента: " + e.getMessage());
-            model.addAttribute("success", false);
-        }
+        final var user = new SecurityUser().setTimesheet(timesheet);
+        setMessageAndSuccessForModel(model, userDepartmentService.removeDepartmentFromUserForView(user, departmentNumber));
 
         final List<UserDepartment> departments = userDepartmentService.getDepartmentsForUser(user);
-        model.addAttribute("departments", departments);
-        model.addAttribute("timesheet", timesheet);
+        setDepartmentsAndTimesheet(model, departments, timesheet);
+
         return "add-user-department";
     }
 }

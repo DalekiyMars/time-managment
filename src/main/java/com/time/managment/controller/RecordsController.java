@@ -1,5 +1,6 @@
 package com.time.managment.controller;
 
+import com.time.managment.constants.Constants;
 import com.time.managment.dto.CombinedRecordDTO;
 import com.time.managment.service.RecordsService;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,8 @@ public class RecordsController {
             @RequestParam(value = "timeSheet", required = false) Integer timeSheet,
             Model model) {
         if (Objects.isNull(timeSheet)) {
-            model.addAttribute("records", Collections.emptyList());
-            model.addAttribute("errorMessage", "Пожалуйста, введите ID пользователя.");
+            model.addAttribute(Constants.ModelValues.RECORDS, Collections.emptyList());
+            model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Пожалуйста, введите ID пользователя.");
             return "records";
         }
         final LocalDate now = LocalDate.now();
@@ -43,9 +44,9 @@ public class RecordsController {
         };
 
         final List<CombinedRecordDTO> records = recordsService.getCombinedRecords(timeSheet, start, now);
-        model.addAttribute("records", records);
-        model.addAttribute("userId", timeSheet);
-        model.addAttribute("periodDisplay", getPeriodDisplay(period));
+        model.addAttribute(Constants.ModelValues.RECORDS, records);
+        model.addAttribute(Constants.ModelValues.USER_ID, timeSheet);
+        model.addAttribute(Constants.ModelValues.PERIOD_DISPLAY, getPeriodDisplay(period));
         return "records";
     }
 

@@ -1,7 +1,8 @@
 package com.time.managment.controller;
 
+import com.time.managment.constants.Constants;
 import com.time.managment.dto.DepartmentDTO;
-import com.time.managment.exceptions.SomethingWentWrong;
+import com.time.managment.dto.HandlerDto;
 import com.time.managment.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +26,7 @@ public class DepartmentController {
     public String showForm(Model model, @RequestParam(value = "timesheet", required = false) Integer timesheet) {
         if (Objects.nonNull(timesheet)) {
             final List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
-            model.addAttribute("departments", departments);
+            model.addAttribute(Constants.ModelValues.DEPARTMENTS, departments);
         }
         return "departments-search";
     }
@@ -40,17 +41,14 @@ public class DepartmentController {
     public String saveDepartmentViaForm(@RequestParam Integer timeSheet,
                                         @RequestParam Integer departmentNumber,
                                         Model model) {
-        try {
-            final DepartmentDTO created = departmentService.saveDepartment(timeSheet, departmentNumber);
-            model.addAttribute("message", "Успешно сохранено: " + created.getUser().getUsername()
-                    + " (" + created.getUser().getTimeSheet() + "), отдел: " + created.getDepartment());
-            model.addAttribute("success", true);
-        } catch (Exception ex) {
-            model.addAttribute("message", "Ошибка: " + ex.getMessage());
-            model.addAttribute("success", false);
-            throw new SomethingWentWrong("Ошибка сохранения").setModelName("department-add");
-        }
+        setMessageAndSuccess(model, departmentService.saveDepartmentForModel(timeSheet, departmentNumber));
+
         return "department-add";
+    }
+
+    private void setMessageAndSuccess(Model model, HandlerDto result){
+        model.addAttribute(Constants.ModelValues.MESSAGE, result.getMessage());
+        model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
     }
 
     @GetMapping("/delete-form")
@@ -58,21 +56,13 @@ public class DepartmentController {
         return "department-delete";
     }
 
-    //FIXME не удаляется
     @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet))")
     @PostMapping("/delete-form")
     public String deleteDepartment(@RequestParam Integer timeSheet,
                                    @RequestParam Integer departmentNumber,
                                    Model model) {
-        try {
-            departmentService.deleteByTimesheetAndDepartment(timeSheet, departmentNumber);
-            model.addAttribute("message", "Успешно удалено: табельный номер " + timeSheet + ", отдел " + departmentNumber);
-            model.addAttribute("success", true);
-        } catch (Exception ex) {
-            model.addAttribute("message", "Ошибка при удалении: " + ex.getMessage());
-            model.addAttribute("success", false);
-            throw new SomethingWentWrong("Удаление не прошло").setModelName("department-delete");
-        }
+        setMessageAndSuccess(model, departmentService.deleteByTimesheetAndDepartmentForView(timeSheet, departmentNumber));
+
         return "department-delete";
     }
 }

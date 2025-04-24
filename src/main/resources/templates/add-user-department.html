@@ -50,7 +50,7 @@
 <body>
 
 <div class="container">
-    <h2>Департаменты пользователя</h2>
+    <h2>Управляемые пользователем (менеджером) отделы</h2>
 
     <!-- Поиск по табельному номеру -->
     <div class="form-container">
@@ -66,9 +66,9 @@
     <div class="form-container" th:if="${timesheet != null}">
         <form th:action="@{/user-departments/add}" method="post">
             <input type="hidden" name="timesheet" th:value="${timesheet}">
-            <label for="departmentNumber">Номер департамента:</label>
+            <label for="departmentNumber">Номер отдела:</label>
             <input type="number" id="departmentNumber" name="departmentNumber" required>
-            <button type="submit">Добавить департамент</button>
+            <button type="submit">Добавить отдел</button>
         </form>
     </div>
 
@@ -77,7 +77,7 @@
         <table>
             <thead>
             <tr>
-                <th>Номер департамента</th>
+                <th>Номер отдела</th>
                 <th>Действия</th>
             </tr>
             </thead>
