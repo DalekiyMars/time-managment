@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/internal-auth")
 public class TokenController {
+
     private final JwtService jwtService;
+
     @PostMapping("/generate")
     public ResponseEntity<String> generateToken(@RequestBody AuthRequest subject) {
         String token = jwtService.serviceAuthorized(subject.getServiceName());
