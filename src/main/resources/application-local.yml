@@ -1,8 +1,8 @@
 admin:
-  username:
-  password:
-  timesheet:
-  full-user-initials:
+  username: admin
+  password: haha123
+  timesheet: 999999
+  full-user-initials: БулычевЕвгенийРоманович
 
 spring:
   datasource:
@@ -15,3 +15,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+
+security:
+  jwt:
+    secret: EOzLwiTYwXYfRmiD
+    expiration: 36000000
+    subject: MyServerName

@@ -35,4 +35,7 @@ public class Constants {
         public static final String USER_ID = "userId";
         public static final String PRESENCES = "presences";
     }
+    public static class Jwt{
+        public static final String BEARER = "Bearer ";
+    }
 }

@@ -17,19 +17,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(Customizer.withDefaults()) // защита от CSRF
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login").permitAll()  // разрешаем только для публичных
-                        .requestMatchers("/api/internal-auth/**").permitAll()  // убираем доступ к generate
-                        .requestMatchers("/api/**").authenticated()  // все /api/** защищены
-                        .anyRequest().authenticated()  // остальные тоже защищены
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // добавляем фильтр
+//        http
+//                .csrf(Customizer.withDefaults()) // защита от CSRF
+//                .authorizeHttpRequests(auth -> auth
+////                        .requestMatchers("/register", "/login").permitAll()  // разрешаем только для публичных
+////                        .requestMatchers("/api/internal-auth/**").permitAll()  // убираем доступ к generate
+////                        .requestMatchers("/api/**").authenticated()  // все /api/** защищены
+//                        .anyRequest().permitAll() // остальные тоже защищены
+//                );  // добавляем фильтр
 
         return http.build();
     }
