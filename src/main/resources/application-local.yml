@@ -18,6 +18,6 @@ spring:
 
 security:
   jwt:
-    secret: EOzLwiTYwXYfRmiD
+    secret: q3RMxwVK0zR+Dz9zk8EyqxrcazVaBpJ+ofJ3Vd3BjqQ=
     expiration: 36000000
-    subject: MyServerName
+    subject: MyServiceName

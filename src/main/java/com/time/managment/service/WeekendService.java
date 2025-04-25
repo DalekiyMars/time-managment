@@ -90,7 +90,7 @@ public class WeekendService {
     public Weekend parseWeekendString(String input) {
         try {
             String[] parts = input.split(";");
-            if (parts.length != 8) {
+            if (parts.length != 7) {
                 throw new IllegalArgumentException("Неверный формат строки: ожидается 8 частей.");
             }
 

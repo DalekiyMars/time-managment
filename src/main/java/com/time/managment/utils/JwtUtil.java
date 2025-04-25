@@ -4,6 +4,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,9 @@ public class JwtUtil {
 
     @Value("${security.jwt.secret}")
     private String secret;
+
+    @Value("${security.jwt.subject}")
+    private String subject;
 
     @Value("${security.jwt.expiration}")
     private long expiration;
@@ -33,7 +37,7 @@ public class JwtUtil {
                     .setSigningKey(secret.getBytes())
                     .build()
                     .parseClaimsJws(token);
-            return true;
+            return StringUtils.equals(getSubject(token), subject) && !isTokenExpired(token);
         } catch (JwtException e) {
             return false;
         }
@@ -46,5 +50,19 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public Date getExpired(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secret.getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+    }
+
+    //true если токен истек
+    public boolean isTokenExpired(String token){
+        return getExpired(token).before(new Date());
     }
 }

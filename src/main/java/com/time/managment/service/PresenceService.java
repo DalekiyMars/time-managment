@@ -9,7 +9,10 @@ import com.time.managment.repository.PresenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,19 +66,19 @@ public class PresenceService {
             throw new IllegalArgumentException("Неверный формат строки от СКУД");
         }
 
-        // Извлекаем данные
-        //String fullName = data[0];        // ФамилияИмяОтчество
-        String timeSheet = data[1];       // Табельный номер
-        //String department = data[2];      // Отдел (не используется для поиска, но может быть полезно)
-        String date = data[3];            // Дата (например, "2025-04-11")
-        String timeMark = data[4];        // Временная метка (например, "08:00:00")
+        String timeSheet = data[1];
+        String date = data[3];
+        String timeMark = data[4].replace("\"", "").trim();
 
-        // Убираем лишние символы (например, кавычки)
-        timeMark = timeMark.replace("\"", "").trim();
+        // Парсим дату в формате "dd.MM.yyyy"
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate localDate = LocalDate.parse(date, dateFormatter);
 
-        // Преобразуем строку даты и времени
-        String dateTimeString = date + "T" + timeMark;
-        LocalDateTime time = LocalDateTime.parse(dateTimeString);
+        // Парсим время
+        LocalTime localTime = LocalTime.parse(timeMark);
+
+        // Объединяем дату и время
+        LocalDateTime time = LocalDateTime.of(localDate, localTime);
 
         // Ищем пользователя по табельному номеру
         User user = userService.getUser(Integer.valueOf(timeSheet));
