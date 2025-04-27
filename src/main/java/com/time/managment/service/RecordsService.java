@@ -63,18 +63,10 @@ public class RecordsService {
     private static CombinedRecordDTO getCombinedRecordDTO(Weekend w) {
         CombinedRecordDTO dto = new CombinedRecordDTO()
                 .setType("weekend")
-                .setTimeSheet(w.getUserTimeSheet());
-
-        // Проверяем, если выходной на весь день (startTime и endTime равны null)
-        if (Objects.isNull(w.getStartTime()) && Objects.isNull(w.getEndTime())) {
-            // Если это выходной на весь день, то время не задаём
-            dto.setStartTime(null);
-            dto.setEndTime(null);
-        } else {
-            // Если время есть, то устанавливаем время начала и окончания
-            dto.setStartTime(w.getStartTime()); // Теперь только LocalTime
-            dto.setEndTime(w.getEndTime());     // Теперь только LocalTime
-        }
+                .setTimeSheet(w.getUserTimeSheet())
+                .setDate(w.getWeekendDate())
+                .setStartTime(w.getStartTime())
+                .setEndTime(w.getEndTime());
 
         // Устанавливаем причину (если есть)
         dto.setReason(w.getReason());

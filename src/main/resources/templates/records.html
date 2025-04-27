@@ -37,13 +37,17 @@
             border-radius: 5px;
         }
 
-        button[type="submit"] {
+        button {
             padding: 10px 20px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+        }
+
+        .download-btn {
+            background-color: #28a745; /* Зеленая кнопка */
         }
 
         .results {
@@ -60,7 +64,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* Добавление стилей для типов */
         .record-type-presence {
             color: green;
         }
@@ -69,10 +72,9 @@
             color: red;
         }
     </style>
-
 </head>
 <body>
-<form method="get" action="/records">
+<form id="searchForm" method="get" action="/records">
     <div class="header">
         <h1>Поиск записей</h1>
         <div class="form-inline">
@@ -86,7 +88,10 @@
             <label for="timeSheet">Табельный номер пользователя:</label>
             <input type="number" id="timeSheet" name="timeSheet" placeholder="Введите табельный номер пользователя" th:value="${timeSheet}">
 
-            <button type="submit">Поиск</button>
+            <div style="display: flex; gap: 10px;">
+                <button type="submit">Поиск</button>
+                <button type="button" class="download-btn" onclick="downloadCsv()">Скачать CSV</button>
+            </div>
         </div>
     </div>
 </form>
@@ -109,10 +114,8 @@
                   th:text="${record.readableType}"></span>
         </p>
 
-        <!-- Проверка на null для startTime и endTime -->
         <p>Начало: <span th:text="${record.startTime != null ? #temporals.format(record.startTime, 'HH:mm') : 'Весь день'}"></span></p>
 
-        <!-- Если тип 'presence', скрываем поле 'Конец' -->
         <div th:if="${record.type != 'presence'}">
             <p>Окончание: <span th:text="${record.endTime != null ? #temporals.format(record.endTime, 'HH:mm') : 'Весь день'}"></span></p>
         </div>
@@ -120,5 +123,7 @@
         <p th:if="${record.type == 'weekend'}">Причина: <span th:text="${record.reason}"></span></p>
     </div>
 </div>
+
+<script src="/download.js"></script>
 </body>
 </html>
