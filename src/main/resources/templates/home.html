@@ -68,7 +68,7 @@
         <h2>Выходные</h2>
         <table class="btn-table">
             <tr>
-                <td><a class="btn" th:href="@{/weekends/search}">Посмотреть выходные</a></td>
+                <td><a class="btn" th:href="@{/weekends/search-form}">Посмотреть выходные</a></td>
                 <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
                     <a class="btn" th:href="@{/weekends/add-form}">Добавить выходной</a>
                 </td>
@@ -84,7 +84,7 @@
         <h2>Посещаемость</h2>
         <table class="btn-table">
             <tr>
-                <td><a class="btn" th:href="@{/presences/search}">Поиск по посещаемости</a></td>
+                <td><a class="btn" th:href="@{/presences/search-form}">Поиск по посещаемости</a></td>
                 <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
                     <a class="btn" th:href="@{/presences/add-form}">Добавить посещение</a>
                 </td>
@@ -121,7 +121,7 @@
         <table class="btn-table">
             <tr>
                 <td sec:authorize="hasAnyRole('MANAGER','USER','ADMIN')">
-                    <a class="btn" th:href="@{/departments/get}">Посмотреть отделы</a>
+                    <a class="btn" th:href="@{/departments/get-form}">Посмотреть отделы</a>
                 </td>
                 <td sec:authorize="hasAnyRole('MANAGER','ADMIN')">
                     <a class="btn" th:href="@{/departments/add}">Добавить отдел</a>

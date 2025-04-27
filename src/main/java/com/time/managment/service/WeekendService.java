@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -84,5 +85,24 @@ public class WeekendService {
         return weekendRepository.existsByUserTimeSheetAndWeekendDateAndStartTimeAndEndTimeAndReason(
                 userTimeSheet, weekendDate, startTime, endTime, reason
         );
+    }
+
+    public Weekend parseWeekendString(String input) {
+        try {
+            String[] parts = input.split(";");
+            if (parts.length != 7) {
+                throw new IllegalArgumentException("Неверный формат строки: ожидается 8 частей.");
+            }
+
+            Integer timesheet = Integer.parseInt(parts[1]);
+            LocalDate date = LocalDate.parse(parts[3], DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            AbsenceReason reason = AbsenceReason.fromString(parts[4]);
+            LocalTime start = LocalTime.parse(parts[5]);
+            LocalTime end = LocalTime.parse(parts[6]);
+
+            return new Weekend(timesheet, reason, date, start, end);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Ошибка при разборе строки увольнительной: " + e.getMessage());
+        }
     }
 }

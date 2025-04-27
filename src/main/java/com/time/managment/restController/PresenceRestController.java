@@ -1,6 +1,5 @@
 package com.time.managment.restController;
 
-import com.time.managment.constants.Constants;
 import com.time.managment.dto.PresenceDTO;
 import com.time.managment.entity.Presence;
 import com.time.managment.service.PresenceService;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/presences")
@@ -37,16 +35,5 @@ public class PresenceRestController {
     public ResponseEntity<List<Presence>> getAllPresences() {
         final List<Presence> presences = presenceService.getAllPresence();
         return ResponseEntity.ok(presences);
-    }
-
-    //FIXME сделать чтобы только сервер мог посылать этот запрос
-    @PostMapping("/process-scud-data")
-    public ResponseEntity<?> processScudData(@RequestBody String scudData) {
-        try {
-            final PresenceDTO presenceDTO = presenceService.processPresenceString(scudData);
-            return ResponseEntity.status(HttpStatus.CREATED).body(presenceDTO);
-        } catch (IllegalArgumentException | NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Constants.ExceptionMessages.SOMETHING_WENT_WRONG);
-        }
     }
 }

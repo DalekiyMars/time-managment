@@ -30,9 +30,17 @@ public class WeekendController {
     private final AccessService accessService;
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
+    @GetMapping("/search-form")
+    public String searchWeekendsForm(){
+        return "weekends-list";
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timesheet)) " +
+            "or (hasRole('USER') and @accessService.isSelf(#timesheet))")
     @GetMapping("/search")
-    public String searchWeekends(@RequestParam(value = "timeSheet", required = false) Integer timeSheet,
+    public String searchWeekends(@RequestParam(value = "timeSheet") Integer timesheet,
                                  Model model) {
+
         CustomUserDetails currentUser = accessService.getCurrentUser(); // Получаем текущего пользователя
 
         // Если роль пользователя - USER

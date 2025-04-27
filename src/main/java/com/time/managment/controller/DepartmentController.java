@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/departments")
 public class DepartmentController {
     private final DepartmentService departmentService;
+
     private final AccessService accessService;
 
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
@@ -50,9 +50,21 @@ public class DepartmentController {
             model.addAttribute(Constants.ModelValues.DEPARTMENTS, departments);
         }
 
+
         return "departments-search";
     }
 
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timesheet)) " +
+            "or (hasRole('USER') and @accessService.isSelf(#timesheet))")
+    @PostMapping("/get")
+    public String showForm(Model model, @RequestParam(value = "timesheet") Integer timesheet) {
+        final List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
+        model.addAttribute(Constants.ModelValues.DEPARTMENTS, departments);
+
+        return "departments-search";
+    }
+
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/add")
     public String showForm() {
         return "department-add";
@@ -73,6 +85,7 @@ public class DepartmentController {
         model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/delete-form")
     public String showDeleteForm() {
         return "department-delete";
