@@ -87,7 +87,7 @@
 <div class="container">
     <h1>Поиск отделений</h1>
 
-    <form th:action="@{/departments/get}" method="get">
+    <form th:action="@{/departments/get}" method="post">
         <label for="timesheet">Введите табельный номер:</label>
         <input type="number" id="timesheet" name="timesheet" required>
         <button type="submit">Найти</button>

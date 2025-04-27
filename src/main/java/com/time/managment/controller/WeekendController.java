@@ -26,17 +26,23 @@ public class WeekendController {
     private final WeekendService weekendService;
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
+    @GetMapping("/search-form")
+    public String searchWeekendsForm(){
+        return "weekends-list";
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timesheet)) " +
+            "or (hasRole('USER') and @accessService.isSelf(#timesheet))")
     @GetMapping("/search")
-    public String searchWeekends(@RequestParam(value = "timeSheet", required = false) Integer timeSheet,
+    public String searchWeekends(@RequestParam(value = "timeSheet") Integer timesheet,
                                  Model model) {
-        if (timeSheet != null) {
-            try {
-                final List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timeSheet);
-                model.addAttribute(Constants.ModelValues.WEEKENDS, weekends);
-            } catch (NoSuchElementException e) {
-                model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Сотрудник с таким табельным номером не найден.");
-            }
+        try {
+            final List<WeekendDTO> weekends = weekendService.getWeekendsByTimesheet(timesheet);
+            model.addAttribute(Constants.ModelValues.WEEKENDS, weekends);
+        } catch (NoSuchElementException e) {
+            model.addAttribute(Constants.ModelValues.ERROR_MESSAGE, "Сотрудник с таким табельным номером не найден.");
         }
+
         return "weekends-list";
     }
 

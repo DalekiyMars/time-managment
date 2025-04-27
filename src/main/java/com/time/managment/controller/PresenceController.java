@@ -28,7 +28,7 @@ public class PresenceController {
     private final UserService userService;
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'USER')")
-    @GetMapping("/search")
+    @GetMapping("/search-form")
     public String showSearchForm() {
         return "presences-search";
     }

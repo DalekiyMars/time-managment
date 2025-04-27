@@ -14,20 +14,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/departments")
 public class DepartmentController {
     private final DepartmentService departmentService;
+
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
-    @GetMapping("/get")
-    public String showForm(Model model, @RequestParam(value = "timesheet", required = false) Integer timesheet) {
-        if (Objects.nonNull(timesheet)) {
-            final List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
-            model.addAttribute(Constants.ModelValues.DEPARTMENTS, departments);
-        }
+    @GetMapping("/get-form")
+    public String getEmptyForm(){
+        return "departments-search";
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timesheet)) " +
+            "or (hasRole('USER') and @accessService.isSelf(#timesheet))")
+    @PostMapping("/get")
+    public String showForm(Model model, @RequestParam(value = "timesheet") Integer timesheet) {
+        final List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
+        model.addAttribute(Constants.ModelValues.DEPARTMENTS, departments);
+
         return "departments-search";
     }
 
