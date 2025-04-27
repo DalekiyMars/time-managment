@@ -70,6 +70,8 @@ public class RecordsController {
     }
 
     @GetMapping("/download")
+    @PreAuthorize("hasRole('ADMIN') or (hasAnyRole('MANAGER') and @accessService.hasAccessToUser(#timeSheet)) " +
+            "or (hasRole('USER') and @accessService.isSelf(#timeSheet))")
     public ResponseEntity<byte[]> downloadCsv(
             @RequestParam(value = "period", defaultValue = "week") String period,
             @RequestParam(value = "timeSheet") Integer timeSheet) throws IOException {
