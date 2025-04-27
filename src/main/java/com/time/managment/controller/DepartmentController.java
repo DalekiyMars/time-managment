@@ -1,10 +1,8 @@
 package com.time.managment.controller;
 
 import com.time.managment.constants.Constants;
-import com.time.managment.dto.CustomUserDetails;
 import com.time.managment.dto.DepartmentDTO;
 import com.time.managment.dto.HandlerDto;
-import com.time.managment.service.AccessService;
 import com.time.managment.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,34 +21,9 @@ import java.util.List;
 public class DepartmentController {
     private final DepartmentService departmentService;
 
-    private final AccessService accessService;
-
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
-    @GetMapping("/get")
-    public String showForm(Model model, @RequestParam(value = "timesheet", required = false) Integer timesheet) {
-        CustomUserDetails currentUser = accessService.getCurrentUser();
-        // Если текущий пользователь с ролью USER
-        if (currentUser != null && currentUser.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"))) {
-
-            // Если timesheet в запросе передан, проверяем доступность
-            if (timesheet != null && !accessService.isSelf(timesheet)) {
-                // Если это не его timesheet, то отказываем в доступе
-                return "access-denied"; // Страница отказа в доступе
-            }
-
-            // Если timesheet не передан, подставляем его собственный
-            if (timesheet == null) {
-                timesheet = currentUser.getUser().getTimesheet();
-            }
-        }
-
-        if (Objects.nonNull(timesheet)) {
-            final List<DepartmentDTO> departments = departmentService.getDepartment(timesheet);
-            model.addAttribute(Constants.ModelValues.DEPARTMENTS, departments);
-        }
-
-
+    @GetMapping("/get-form")
+    public String getEmptyForm(){
         return "departments-search";
     }
 
@@ -80,7 +53,7 @@ public class DepartmentController {
         return "department-add";
     }
 
-    private void setMessageAndSuccess(Model model, HandlerDto result) {
+    private void setMessageAndSuccess(Model model, HandlerDto result){
         model.addAttribute(Constants.ModelValues.MESSAGE, result.getMessage());
         model.addAttribute(Constants.ModelValues.SUCCESS, result.getSuccess());
     }
