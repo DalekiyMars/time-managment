@@ -1,9 +1,7 @@
 package com.time.managment.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -29,6 +27,8 @@ public class User {
 
     @NotNull
     @Column(name = "timesheet")
+    @Min(value = 100, message = "Слишком короткий табельный номер")
+    @Max(value = 999999,message = "Слишком длинный табельный номер")
     private Integer timeSheet;
 
     @OneToMany(mappedBy = "userTimeSheet", cascade = CascadeType.ALL, orphanRemoval = true)

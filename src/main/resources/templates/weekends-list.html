@@ -79,7 +79,7 @@
 
     <form method="get" th:action="@{/weekends/search}">
         <label for="timeSheet">Введите табельный номер:</label>
-        <input type="text" id="timeSheet" name="timeSheet" th:value="${param.timeSheet}" />
+        <input type="text" id="timeSheet" name="timeSheet" th:value="${param.timeSheet}" required />
         <button type="submit">Поиск</button>
     </form>
 

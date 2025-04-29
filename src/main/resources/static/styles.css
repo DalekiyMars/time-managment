@@ -39,6 +39,13 @@ input[type="number"] {
     font-size: 1em;
 }
 
+input[type="text"] {
+    padding: 20px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
 button {
     padding: 10px;
     background-color: #2563eb;
@@ -94,3 +101,24 @@ li {
     background-color: #fee2e2;
     color: #991b1b;
 }
+
+.full-width-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.full-width-button:hover {
+    background-color: #0056b3;
+}
+

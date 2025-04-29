@@ -28,7 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        boolean isInternalApi = path.startsWith("/api/info-controller") || path.startsWith("/api/weekend-controller");
+        boolean isInternalApi = path.startsWith("/api/");
 
         if (isInternalApi) {
             if (Objects.isNull(authHeader) || !authHeader.startsWith(Constants.Jwt.BEARER)) {

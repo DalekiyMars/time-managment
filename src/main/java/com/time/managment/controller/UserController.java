@@ -41,7 +41,7 @@ public class UserController {
             model.addAttribute(Constants.ModelValues.MESSAGE, "Пользователь добавлен: логин — " + saved.getUsername() +
                     ", пароль — " + saved.getPassword());
         } catch (Exception e) {
-            model.addAttribute(Constants.ModelValues.MESSAGE, "Ошибка при добавлении пользователя: " + e.getMessage());
+            model.addAttribute(Constants.ModelValues.MESSAGE, "Ошибка при добавлении пользователя");
         }
         return "user-add";
     }
@@ -107,6 +107,7 @@ public class UserController {
     public String searchUserForm() {
         return "user-search";
     }
+
     @PreAuthorize("hasAnyRole('MANAGER', 'USER', 'ADMIN')")
     @GetMapping("/search-result")
     public String searchUserByTimesheet(@RequestParam Integer timeSheet, Model model) {

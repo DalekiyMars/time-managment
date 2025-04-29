@@ -78,6 +78,7 @@ public class UserService {
         try {
             updateUser(timeSheet,newUsername, newRole);
 
+            log.info("Пользователь " + timeSheet + " обновлен: новая роль - " + newRole);
             return new HandlerDto()
                     .setSuccess(true)
                     .setMessage("Обновлено: " + newUsername);
@@ -100,7 +101,7 @@ public class UserService {
         secUser.setUser(existingUser);
 
         existingUser.setSecurityUser(secUser);
-
+        log.info("Пользователь " + timeSheet + " обновлен: новая роль - " + newRole);
         securityUserService.save(secUser);
         return userRepository.save(existingUser);
     }

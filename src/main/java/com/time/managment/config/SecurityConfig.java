@@ -52,10 +52,7 @@ public class SecurityConfig {
 
     private void getAuthorizeHttpRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry request) {
         request
-                .requestMatchers("/login").permitAll()
-                .requestMatchers("/api/internal-auth/generate",
-                        "/api/info-controller/process-scud-data",
-                        "/api/info-controller/process-weekend-data").permitAll()
+                .requestMatchers("/login", "/api/**").permitAll()
                 .anyRequest().authenticated();
     }
 }

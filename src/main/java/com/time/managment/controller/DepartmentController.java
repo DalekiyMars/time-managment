@@ -49,7 +49,6 @@ public class DepartmentController {
                                         @RequestParam Integer departmentNumber,
                                         Model model) {
         setMessageAndSuccess(model, departmentService.saveDepartmentForModel(timeSheet, departmentNumber));
-
         return "department-add";
     }
 

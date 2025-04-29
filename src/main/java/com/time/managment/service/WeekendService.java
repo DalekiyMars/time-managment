@@ -91,18 +91,20 @@ public class WeekendService {
         try {
             String[] parts = input.split(";");
             if (parts.length != 7) {
-                throw new IllegalArgumentException("Неверный формат строки: ожидается 8 частей.");
+                throw new IllegalArgumentException("Неверный формат строки: ожидается 7 частей.");
             }
 
             Integer timesheet = Integer.parseInt(parts[1]);
             LocalDate date = LocalDate.parse(parts[3], DateTimeFormatter.ofPattern("dd.MM.yyyy"));
             AbsenceReason reason = AbsenceReason.fromString(parts[4]);
-            LocalTime start = LocalTime.parse(parts[5]);
-            LocalTime end = LocalTime.parse(parts[6]);
+
+            LocalTime start = "null".equalsIgnoreCase(parts[5]) ? null : LocalTime.parse(parts[5]);
+            LocalTime end = "null".equalsIgnoreCase(parts[6]) ? null : LocalTime.parse(parts[6]);
 
             return new Weekend(timesheet, reason, date, start, end);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Ошибка при разборе строки увольнительной: " + e.getMessage());
+            throw new IllegalArgumentException("Ошибка при разборе строки увольнительной: " + e.getMessage(), e);
         }
     }
+
 }
